@@ -18,7 +18,6 @@ class MainActivity : AppCompatActivity() {
 
         val searchButtonClickListener: View.OnClickListener = object: View.OnClickListener {
             override fun onClick(v: View?) {
-                //printToast("Экран поиска...")
                 val intent: Intent = Intent(this@MainActivity, SearchActivity::class.java)
                 startActivity(intent)
             }
@@ -26,21 +25,13 @@ class MainActivity : AppCompatActivity() {
         searchButton.setOnClickListener(searchButtonClickListener)
 
         mediaButton.setOnClickListener {
-            //printToast("Экран медиатеки...")
             val intent: Intent = Intent(this@MainActivity, MediaActivity::class.java)
             startActivity(intent)
         }
 
         settingsButton.setOnClickListener {
-            //printToast("Экран настроек...")
             val intent: Intent = Intent(this@MainActivity, SettingsActivity::class.java)
             startActivity(intent)
         }
     }
-
-    fun printToast (message: String) {
-        Toast.makeText(this@MainActivity, message, Toast.LENGTH_SHORT).show()
-    }
-
-
 }
