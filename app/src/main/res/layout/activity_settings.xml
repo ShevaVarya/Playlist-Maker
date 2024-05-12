@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:layout_marginStart="@dimen/standard_padding">
+    android:layout_marginStart="@dimen/standard_padding"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,21 +15,21 @@
 
         <ImageView
             android:id="@+id/back_from_settings"
+            style="@style/Icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:contentDescription="@string/settings"
+            android:contentDescription="@string/button_back"
             android:src="@drawable/ic_back" />
 
         <TextView
+            style="@style/TitleText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginStart="24dp"
             android:layout_weight="1"
             android:text="@string/settings"
-            android:textColor="@color/black"
-            android:textSize="@dimen/title_text_size"
             android:textStyle="bold" />
 
     </LinearLayout>
@@ -39,41 +40,38 @@
         android:layout_marginTop="24dp">
 
         <TextView
+            style="@style/SettingText"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:gravity="center"
-            android:text="@string/dark_theme"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_size" />
+            android:text="@string/dark_theme" />
 
-        <Switch
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_night_mode"
             android:layout_width="56dp"
             android:layout_height="match_parent"
             android:layout_gravity="end"
-            android:paddingVertical="@dimen/padding_21"
             android:gravity="center"
-            android:paddingEnd="6dp"
-            tools:ignore="UseSwitchCompatOrMaterialXml" />
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="@dimen/padding_21"
+            style="@style/Switch"/>
 
     </FrameLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="@dimen/padding_21"
-        android:layout_marginEnd="12dp">
+        android:layout_marginEnd="12dp"
+        android:paddingVertical="@dimen/padding_21">
 
         <TextView
+            style="@style/SettingText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:gravity="center"
-            android:text="@string/share_app"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_size" />
+            android:text="@string/share_app" />
 
         <ImageView
+            android:id="@+id/share_app"
+            style="@style/Icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
@@ -86,19 +84,18 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="@dimen/padding_21"
-        android:layout_marginEnd="12dp">
+        android:layout_marginEnd="12dp"
+        android:paddingVertical="@dimen/padding_21">
 
         <TextView
+            style="@style/SettingText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:gravity="center"
-            android:text="@string/chat_support"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_size" />
+            android:text="@string/chat_support" />
 
         <ImageView
+            android:id="@+id/write_in_support"
+            style="@style/Icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
@@ -111,19 +108,18 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingVertical="@dimen/padding_21"
-        android:layout_marginEnd="12dp">
+        android:layout_marginEnd="12dp"
+        android:paddingVertical="@dimen/padding_21">
 
         <TextView
+            style="@style/SettingText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="start"
-            android:gravity="center"
-            android:text="@string/user_agreements"
-            android:textColor="@color/black"
-            android:textSize="@dimen/text_size" />
+            android:text="@string/user_agreements" />
 
         <ImageView
+            android:id="@+id/user_agreement"
+            style="@style/Icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="end"
