@@ -10,7 +10,7 @@ import androidx.appcompat.app.AppCompatActivity
 
 class SearchActivity : AppCompatActivity() {
 
-    companion object {
+    private companion object {
         const val KEY = "KEY"
         const val DEFAULT_VALUE = ""
     }

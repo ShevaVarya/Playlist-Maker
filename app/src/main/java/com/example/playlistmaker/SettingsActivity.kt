@@ -4,6 +4,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -27,12 +28,12 @@ class SettingsActivity : AppCompatActivity() {
             }
         }
 
-        val shareApp = findViewById<ImageView>(R.id.share_app)
+        val shareApp = findViewById<TextView>(R.id.share_app)
         shareApp.setOnClickListener {
             sendMessage(getString(R.string.url_practicum))
         }
 
-        val writeInSupport = findViewById<ImageView>(R.id.write_in_support)
+        val writeInSupport = findViewById<TextView>(R.id.write_in_support)
         writeInSupport.setOnClickListener {
             sendMail(
                 getString(R.string.mail),
@@ -41,7 +42,7 @@ class SettingsActivity : AppCompatActivity() {
             )
         }
 
-        val userAgreement = findViewById<ImageView>(R.id.user_agreement)
+        val userAgreement = findViewById<TextView>(R.id.user_agreement)
         userAgreement.setOnClickListener {
             openBrowser(getString(R.string.url_to_user_agreement))
         }
