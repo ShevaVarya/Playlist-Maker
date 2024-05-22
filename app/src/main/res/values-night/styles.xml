@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="MainActivity" parent="Theme.PlaylistMaker">
+        <item name="android:background">@color/black</item>
+    </style>
+    <style name="Icon">
+        <item name="tint">@color/white</item>
+    </style>
+    <style name="IconDarkGreyAndBlack">
+        <item name="tint">@color/black</item>
+    </style>
+    <style name="Switch">
+        <item name="android:checked">true</item>
+        <item name="thumbTint">@color/blue</item>
+        <item name="trackTint">@color/light_blue</item>
+        <item name="fontFamily">@font/ys_display_regular</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/text_size</item>
+        <item name="android:textFontWeight">500</item>
+    </style>
+
+
+    <style name="GeneralText">
+        <item name="fontFamily">@font/ys_display_regular</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">@dimen/text_size</item>
+        <item name="android:textFontWeight">500</item>
+        <item name="android:layout_gravity">start</item>
+    </style>
+    <style name="TitleText" parent="GeneralText">
+        <item name="android:fontWeight">500</item>
+        <item name="android:textSize">@dimen/title_text_size</item>
+    </style>
+    <style name="SettingText" parent="GeneralText">
+        <item name="tint">@color/white</item>
+        <item name="android:gravity">center_vertical</item>
+    </style>
+    <style name="EditText" parent="GeneralText">
+        <item name="android:background">@null</item>
+        <item name="maxLines">1</item>
+        <item name="android:textColorHint">@color/black</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textFontWeight">400</item>
+        <item name="drawableTint">@color/black</item>
+    </style>
+</resources>
