@@ -37,6 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/standard_padding"
         android:layout_marginTop="4dp"
+        android:layout_marginBottom="8dp"
         android:orientation="horizontal">
 
         <EditText
@@ -59,12 +60,18 @@
             android:layout_width="16dp"
             android:layout_height="16dp"
             android:layout_gravity="center"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="@dimen/margin_8"
             android:layout_marginEnd="12dp"
             android:contentDescription="@string/clear_edit_text"
             android:src="@drawable/ic_close"
             android:visibility="gone" />
 
     </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/tracks_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/standard_padding"/>
 
 </LinearLayout>

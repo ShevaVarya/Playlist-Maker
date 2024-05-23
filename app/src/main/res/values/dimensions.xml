@@ -6,4 +6,5 @@
     <dimen name="standard_padding">16dp</dimen>
     <dimen name="icon_margin_to_text">8dp</dimen>
     <dimen name="padding_21">21dp</dimen>
+    <dimen name="margin_8">8dp</dimen>
 </resources>

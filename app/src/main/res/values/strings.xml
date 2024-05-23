@@ -15,4 +15,5 @@
     <string name="url_to_user_agreement">https://yandex.ru/legal/practicum_offer/</string>
     <string name="button_back">Кнопка назад</string>
     <string name="clear_edit_text">Очистить строку</string>
+    <string name="track_image">Изображение песни</string>
 </resources>
