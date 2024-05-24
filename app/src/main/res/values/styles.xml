@@ -42,6 +42,8 @@
         <item name="android:textSize">@dimen/text_size</item>
         <item name="android:textFontWeight">500</item>
         <item name="android:layout_gravity">start</item>
+        <item name="android:maxLines">1</item>
+        <item name="android:ellipsize">end</item>
     </style>
     <style name="EditText" parent="GeneralText">
         <item name="android:background">@null</item>
@@ -57,5 +59,10 @@
     <style name="SettingText" parent="GeneralText">
         <item name="android:gravity">center_vertical</item>
         <item name="tint">@color/dark_grey</item>
+    </style>
+    <style name="GreyText11" parent="GeneralText">
+        <item name="android:textSize">11sp</item>
+        <item name="fontWeight">400</item>
+        <item name="android:textColor">@color/dark_grey</item>
     </style>
 </resources>
