@@ -14,7 +14,7 @@
         android:layout_marginVertical="@dimen/margin_8"
         android:layout_marginStart="13dp"
         android:contentDescription="@string/track_image"
-        android:src="@drawable/ic_search"
+        android:src="@drawable/placeholder"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"/>

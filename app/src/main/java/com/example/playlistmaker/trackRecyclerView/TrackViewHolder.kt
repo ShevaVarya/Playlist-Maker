@@ -25,7 +25,7 @@ class TrackViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
             .load(model.artworkUrl100)
             .centerCrop()
             .transform(RoundedCorners(Refactor.dpToPx(2f, view.context)))
-            .placeholder(R.drawable.ic_search)
+            .placeholder(R.drawable.placeholder)
             .into(artwork)
     }
 
