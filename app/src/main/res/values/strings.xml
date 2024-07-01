@@ -16,4 +16,8 @@
     <string name="button_back">Кнопка назад</string>
     <string name="clear_edit_text">Очистить строку</string>
     <string name="track_image">Изображение песни</string>
+    <string name="not_found">Ничего не нашлось!</string>
+    <string name="connection_problem">Проблемы со связью</string>
+    <string name="connection_problem_additional">Загрузка не удалась. Проверьте подключение к интернету</string>
+    <string name="reload">Обновить</string>
 </resources>
