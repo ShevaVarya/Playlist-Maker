@@ -8,7 +8,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.data.Track
-import com.example.playlistmaker.instruments.Refactor
+import com.example.playlistmaker.instruments.Formatter
 
 class TrackViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
@@ -20,11 +20,11 @@ class TrackViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
     fun bind(model: Track) {
         trackName.text = model.trackName
         artistName.text = model.artistName
-        trackTime.text = model.trackTime
+        trackTime.text = Formatter.msToMinute(model.trackTimeMillis)
         Glide.with(view)
             .load(model.artworkUrl100)
             .centerCrop()
-            .transform(RoundedCorners(Refactor.dpToPx(2f, view.context)))
+            .transform(RoundedCorners(Formatter.dpToPx(2f, view.context)))
             .placeholder(R.drawable.placeholder)
             .into(artwork)
     }
