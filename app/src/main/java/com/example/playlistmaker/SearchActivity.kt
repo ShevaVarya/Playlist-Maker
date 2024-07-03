@@ -105,6 +105,8 @@ class SearchActivity : AppCompatActivity() {
 
         clearButtonEditText.setOnClickListener {
             editText.setText("")
+            tracks.clear()
+            adapter.notifyDataSetChanged()
         }
     }
 
@@ -122,6 +124,8 @@ class SearchActivity : AppCompatActivity() {
                             adapter.notifyDataSetChanged()
                         }
                         if (tracks.isEmpty()) {
+                            tracks.clear()
+                            adapter.notifyDataSetChanged()
                             showMessage(SearchErrors.NOT_FOUND_ERROR)
                         } else {
                             showMessage(SearchErrors.NO_ERRORS)
@@ -157,6 +161,8 @@ class SearchActivity : AppCompatActivity() {
                 viewGroupForError.visibility = View.VISIBLE
                 errorImage.visibility = View.VISIBLE
                 errorTittle.visibility = View.VISIBLE
+                errorSubTittle.visibility = View.GONE
+                reloadButton.visibility = View.GONE
             }
 
             SearchErrors.NETWORK_ERROR -> {
