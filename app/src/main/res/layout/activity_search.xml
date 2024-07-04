@@ -41,6 +41,7 @@
         android:orientation="horizontal">
 
         <EditText
+            android:textCursorDrawable="@drawable/cursor_color"
             android:id="@+id/edit_text_search"
             style="@style/EditText"
             android:layout_width="0dp"
@@ -50,8 +51,10 @@
             android:drawableStart="@drawable/ic_search_edit_text"
             android:drawablePadding="10dp"
             android:hint="@string/search"
+            android:imeOptions="actionDone"
             android:inputType="text"
             android:paddingVertical="10dp"
+            android:singleLine="true"
             android:textSize="16sp" />
 
         <ImageView
@@ -68,10 +71,60 @@
 
     </LinearLayout>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/tracks_list"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/standard_padding"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/tracks_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/standard_padding" />
+
+        <LinearLayout
+            android:id="@+id/group_for_error"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/error_image"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
+                android:src="@drawable/ic_bad_search_light_mode"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/error_tittle"
+                style="@style/TextForError"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/not_found"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/error_subtittle"
+                style="@style/TextForError"
+                android:maxWidth="312dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                android:text="@string/connection_problem_additional" />
+
+            <Button
+                style="@style/StyleForReloadButton"
+                android:id="@+id/reload_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="@string/reload"
+                android:visibility="gone" />
+        </LinearLayout>
+
+    </LinearLayout>
 
 </LinearLayout>
