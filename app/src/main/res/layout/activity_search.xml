@@ -41,7 +41,6 @@
         android:orientation="horizontal">
 
         <EditText
-            android:textCursorDrawable="@drawable/cursor_color"
             android:id="@+id/edit_text_search"
             style="@style/EditText"
             android:layout_width="0dp"
@@ -55,6 +54,7 @@
             android:inputType="text"
             android:paddingVertical="10dp"
             android:singleLine="true"
+            android:textCursorDrawable="@drawable/cursor_color"
             android:textSize="16sp" />
 
         <ImageView
@@ -73,14 +73,36 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/history_tittle"
+            style="@style/TextForError"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="42dp"
+            android:layout_marginBottom="4dp"
+            android:text="@string/history_search"
+            android:textFontWeight="500"
+            android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/tracks_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
             android:layout_marginTop="@dimen/standard_padding" />
+
+        <Button
+            android:id="@+id/clear_history_button"
+            style="@style/StyleForReloadButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="24dp"
+            android:text="@string/clear_history"
+            android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/group_for_error"
@@ -108,16 +130,16 @@
             <TextView
                 android:id="@+id/error_subtittle"
                 style="@style/TextForError"
-                android:maxWidth="312dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:visibility="gone"
-                android:text="@string/connection_problem_additional" />
+                android:maxWidth="312dp"
+                android:text="@string/connection_problem_additional"
+                android:visibility="gone" />
 
             <Button
-                style="@style/StyleForReloadButton"
                 android:id="@+id/reload_button"
+                style="@style/StyleForReloadButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"

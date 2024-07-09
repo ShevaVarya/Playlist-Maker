@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
+import com.example.playlistmaker.instruments.App
 import com.google.android.material.switchmaterial.SwitchMaterial
 
 class SettingsActivity : AppCompatActivity() {
@@ -20,12 +20,9 @@ class SettingsActivity : AppCompatActivity() {
         }
 
         val switch = findViewById<SwitchMaterial>(R.id.switch_night_mode)
-        switch.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
+        switch.isChecked = (applicationContext as App).darkTheme
+        switch.setOnCheckedChangeListener { switcher, isChecked ->
+            (applicationContext as App).switchTheme(isChecked)
         }
 
         val shareApp = findViewById<TextView>(R.id.share_app)
