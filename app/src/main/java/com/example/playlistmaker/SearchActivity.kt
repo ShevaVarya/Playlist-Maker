@@ -134,6 +134,7 @@ class SearchActivity : AppCompatActivity() {
             editText.setText("")
             tracks.clear()
             searchAdapter.notifyDataSetChanged()
+            showMessage(SearchErrors.NO_ERRORS)
         }
 
         clearHistoryButton.setOnClickListener {
@@ -194,14 +195,9 @@ class SearchActivity : AppCompatActivity() {
     }
 
     private fun showMessage(tag: SearchErrors) {
-        val isNightMode = isNightModeEnabled(this)
         when (tag) {
             SearchErrors.NOT_FOUND_ERROR -> {
-                if (isNightMode) {
-                    errorImage.setImageResource(R.drawable.ic_bad_search_dark_mode)
-                } else {
-                    errorImage.setImageResource(R.drawable.ic_bad_search_light_mode)
-                }
+                errorImage.setImageResource(R.drawable.ic_bad_search)
                 errorTittle.setText(R.string.not_found)
 
                 viewGroupForError.visibility = View.VISIBLE
@@ -212,11 +208,7 @@ class SearchActivity : AppCompatActivity() {
             }
 
             SearchErrors.NETWORK_ERROR -> {
-                if (isNightMode) {
-                    errorImage.setImageResource(R.drawable.ic_bad_connection_dark_mode)
-                } else {
-                    errorImage.setImageResource(R.drawable.ic_bad_connection_light_mode)
-                }
+                errorImage.setImageResource(R.drawable.ic_bad_connection)
                 errorTittle.setText(R.string.connection_problem)
                 errorSubTittle.setText(R.string.connection_problem_additional)
 
