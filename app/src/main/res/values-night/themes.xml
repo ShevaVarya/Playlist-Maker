@@ -4,5 +4,7 @@
         <!-- Customize your dark theme here. -->
         <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
         <item name="colorPrimary">@color/white</item>
+        <item name="colorSecondary">@color/dark</item>
+        <item name="colorPrimaryVariant">@color/white_transparent_25</item>
     </style>
 </resources>

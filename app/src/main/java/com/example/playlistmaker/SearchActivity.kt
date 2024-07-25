@@ -1,6 +1,7 @@
 package com.example.playlistmaker
 
 import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.text.Editable
@@ -85,6 +86,10 @@ class SearchActivity : AppCompatActivity() {
 
         val onItemClickListener = OnItemClickListener { item ->
             searchHistory.addTrackToSearchHistory(item)
+            val intent = Intent(this, AudioPlayerActivity::class.java).apply {
+                putExtra("TRACK", item)
+            }
+            startActivity(intent)
         }
 
         searchHistoryAdapter = TrackAdapter(onItemClickListener)
