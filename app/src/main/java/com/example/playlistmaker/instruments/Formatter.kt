@@ -21,6 +21,5 @@ class Formatter {
             artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
 
         fun getYear(year: String) = year.substring(0, 4)
-
     }
 }
