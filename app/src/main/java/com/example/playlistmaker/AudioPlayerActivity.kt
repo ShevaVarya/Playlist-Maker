@@ -1,22 +1,30 @@
 package com.example.playlistmaker
 
+import android.media.MediaPlayer
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.Group
-import androidx.core.content.IntentCompat
-import androidx.transition.Visibility
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
+import com.example.playlistmaker.data.PlayerState
 import com.example.playlistmaker.data.Track
 import com.example.playlistmaker.instruments.Formatter
 
 class AudioPlayerActivity : AppCompatActivity() {
+
+    companion object {
+        private const val DELAY_MS = 500L
+        private const val DURATION = 30_000L
+    }
+
+    private lateinit var handler: Handler
 
     private lateinit var backButton: ImageView
     private lateinit var trackImage: ImageView
@@ -26,6 +34,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var playButton: ImageButton
     private lateinit var addToFavoriteButton: ImageButton
     private lateinit var trackTime: TextView
+    private lateinit var recordTime: TextView
     private lateinit var trackCollectionName: TextView
     private lateinit var trackYear: TextView
     private lateinit var trackGenre: TextView
@@ -33,6 +42,9 @@ class AudioPlayerActivity : AppCompatActivity() {
     private lateinit var groupOfFieldCollection: Group
 
     private lateinit var track: Track
+
+    private var mediaPlayer = MediaPlayer()
+    private var playerState = PlayerState.STATE_DEFAULT
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +64,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         playButton = findViewById(R.id.ib_play)
         addToFavoriteButton = findViewById(R.id.ib_add_to_favorite)
         trackTime = findViewById(R.id.track_time)
+        recordTime = findViewById(R.id.record_time)
         trackCollectionName = findViewById(R.id.collection_name)
         trackYear = findViewById(R.id.year)
         trackGenre = findViewById(R.id.genre)
@@ -61,6 +74,10 @@ class AudioPlayerActivity : AppCompatActivity() {
         backButton.setOnClickListener {
             finish()
         }
+
+        handler = Handler(Looper.getMainLooper())
+
+        preparePlayer()
 
         Glide.with(this)
             .load(Formatter.getCoverArtwork(track.artworkUrl100))
@@ -79,9 +96,80 @@ class AudioPlayerActivity : AppCompatActivity() {
                 groupOfFieldCollection.visibility = View.VISIBLE
                 trackCollectionName.text = collectionName
             }
-                trackYear.text = Formatter.getYear(releaseDate)
-                trackGenre.text = primaryGenreName
-                trackCountry.text = country
+            trackYear.text = Formatter.getYear(releaseDate)
+            trackGenre.text = primaryGenreName
+            trackCountry.text = country
         }
+
+        playButton.setOnClickListener {
+            playbackControl()
+        }
+    }
+
+    private fun playbackControl() {
+        when (playerState) {
+            PlayerState.STATE_PLAYING -> {
+                pausePlayer()
+            }
+
+            PlayerState.STATE_PREPARED, PlayerState.STATE_PAUSED -> {
+                startPlayer()
+            }
+
+            PlayerState.STATE_DEFAULT -> {}
+        }
+    }
+
+    private fun preparePlayer() {
+        with(mediaPlayer) {
+            setDataSource(track.previewUrl)
+            prepareAsync()
+            setOnPreparedListener {
+                playButton.isEnabled = true
+                playerState = PlayerState.STATE_PREPARED
+            }
+            setOnCompletionListener {
+                playButton.setImageResource(R.drawable.ic_play_arrow)
+                playerState = PlayerState.STATE_PREPARED
+                handler.removeCallbacks(createTimerTask())
+                recordTime.setText(R.string.time_0_00)
+            }
+        }
+    }
+
+    private fun startPlayer() {
+        mediaPlayer.start()
+        playButton.setImageResource(R.drawable.ic_pause)
+        playerState = PlayerState.STATE_PLAYING
+        handler.post(createTimerTask())
+    }
+
+    private fun pausePlayer() {
+        mediaPlayer.pause()
+        playButton.setImageResource(R.drawable.ic_play_arrow)
+        playerState = PlayerState.STATE_PAUSED
+        handler.removeCallbacks(createTimerTask())
+    }
+
+    private fun createTimerTask(): Runnable {
+        return object : Runnable {
+            override fun run() {
+                if (playerState == PlayerState.STATE_PLAYING) {
+                    recordTime.text = Formatter.msToMinute(mediaPlayer.currentPosition.toLong())
+                    handler.postDelayed(this, DELAY_MS)
+                }
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        pausePlayer()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.release()
+        handler.removeCallbacks(createTimerTask())
     }
 }
