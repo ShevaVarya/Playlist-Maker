@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.provider.MediaStore.Audio.AudioColumns.TRACK
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -35,6 +36,7 @@ class SearchActivity : AppCompatActivity() {
         const val KEY = "KEY"
         const val DEFAULT_VALUE = ""
         const val SHARED_PREFERENCES_NAME_FILE = "shared_preferences_history_search"
+        const val INTENT_KEY = "TRACK"
         const val SEARCH_DEBOUNCE_DELAY = 2000L
         const val CLICK_DEBOUNCE_DELAY = 1000L
     }
@@ -101,7 +103,7 @@ class SearchActivity : AppCompatActivity() {
             if (clickDebounce()) {
                 searchHistory.addTrackToSearchHistory(item)
                 val intent = Intent(this, AudioPlayerActivity::class.java).apply {
-                    putExtra("TRACK", item)
+                    putExtra(INTENT_KEY, item)
                 }
                 startActivity(intent)
             }
