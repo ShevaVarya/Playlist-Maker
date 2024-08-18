@@ -1,17 +1,17 @@
 package com.example.playlistmaker
 
-import android.content.Context
 import android.content.Intent
-import android.content.res.Configuration
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,9 +35,15 @@ class SearchActivity : AppCompatActivity() {
         const val KEY = "KEY"
         const val DEFAULT_VALUE = ""
         const val SHARED_PREFERENCES_NAME_FILE = "shared_preferences_history_search"
+        const val SEARCH_DEBOUNCE_DELAY = 2000L
+        const val CLICK_DEBOUNCE_DELAY = 1000L
     }
 
+    private var isCLickAllowed = true
+
     private var userInput: String = DEFAULT_VALUE
+
+    private val searchRunnable = Runnable { makeRequest() }
 
     private val itunesBaseUrl = "https://itunes.apple.com"
     private val retrofit = Retrofit.Builder()
@@ -51,11 +57,12 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchHistoryAdapter: TrackAdapter
     private lateinit var searchHistory: SearchHistory
 
-
+    private lateinit var groupOfTracksList: LinearLayout
     private lateinit var recyclerView: RecyclerView
     private lateinit var buttonBack: ImageView
     private lateinit var clearButtonEditText: ImageView
     private lateinit var editText: EditText
+    private lateinit var progressBar: ProgressBar
     private lateinit var viewGroupForError: LinearLayout
     private lateinit var errorImage: ImageView
     private lateinit var errorTittle: TextView
@@ -64,14 +71,18 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var historyTittle: TextView
     private lateinit var clearHistoryButton: Button
 
+    private lateinit var handler: Handler
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search)
 
+        groupOfTracksList = findViewById(R.id.ll_tracks_list)
         recyclerView = findViewById<RecyclerView>(R.id.tracks_list)
         buttonBack = findViewById<ImageView>(R.id.icon_back)
         clearButtonEditText = findViewById<ImageView>(R.id.icon_clear_search)
         editText = findViewById(R.id.edit_text_search)
+        progressBar = findViewById(R.id.progress_bar)
         viewGroupForError = findViewById<LinearLayout>(R.id.group_for_error)
         errorImage = findViewById<ImageView>(R.id.error_image)
         errorTittle = findViewById<TextView>(R.id.error_tittle)
@@ -80,16 +91,20 @@ class SearchActivity : AppCompatActivity() {
         historyTittle = findViewById(R.id.history_tittle)
         clearHistoryButton = findViewById(R.id.clear_history_button)
 
+        handler = Handler(Looper.getMainLooper())
+
         buttonBack.setOnClickListener {
             finish()
         }
 
         val onItemClickListener = OnItemClickListener { item ->
-            searchHistory.addTrackToSearchHistory(item)
-            val intent = Intent(this, AudioPlayerActivity::class.java).apply {
-                putExtra("TRACK", item)
+            if (clickDebounce()) {
+                searchHistory.addTrackToSearchHistory(item)
+                val intent = Intent(this, AudioPlayerActivity::class.java).apply {
+                    putExtra("TRACK", item)
+                }
+                startActivity(intent)
             }
-            startActivity(intent)
         }
 
         searchHistoryAdapter = TrackAdapter(onItemClickListener)
@@ -110,7 +125,11 @@ class SearchActivity : AppCompatActivity() {
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 clearButtonEditText.visibility = clearButtonVisibility(s)
+                groupOfTracksList.visibility = View.GONE
+                viewGroupForError.visibility = View.GONE
+                progressBar.visibility = View.VISIBLE
                 showHistory(editText.hasFocus() && s?.isEmpty() == true)
+                searchDebounce()
             }
 
             override fun afterTextChanged(s: Editable?) {
@@ -119,20 +138,14 @@ class SearchActivity : AppCompatActivity() {
         }
         editText.addTextChangedListener(textWatcher)
 
-        editText.setOnEditorActionListener { _, actionId, _ ->
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                makeRequest()
-                true
-            }
-            false
-        }
-
         editText.setOnFocusChangeListener { _, hasFocus ->
             showHistory(hasFocus && editText.text.isEmpty())
         }
 
         reloadButton.setOnClickListener {
-            makeRequest()
+            viewGroupForError.visibility = View.GONE
+            progressBar.visibility = View.VISIBLE
+            searchDebounce()
         }
 
         clearButtonEditText.setOnClickListener {
@@ -164,14 +177,17 @@ class SearchActivity : AppCompatActivity() {
 
     private fun makeRequest() {
         if (editText.text.isNotEmpty()) {
+
             service.searchTrack(editText.text.toString()).enqueue(object : Callback<TrackResponse> {
                 override fun onResponse(
                     call: Call<TrackResponse>,
                     response: Response<TrackResponse>
                 ) {
+                    progressBar.visibility = View.GONE
                     if (response.code() == 200) {
                         tracks.clear()
                         if (response.body()?.results?.isNotEmpty() == true) {
+                            groupOfTracksList.visibility = View.VISIBLE
                             tracks.addAll(response.body()?.results!!)
                             searchAdapter.notifyDataSetChanged()
                         }
@@ -192,6 +208,7 @@ class SearchActivity : AppCompatActivity() {
                 override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
                     tracks.clear()
                     searchAdapter.notifyDataSetChanged()
+                    progressBar.visibility = View.GONE
                     showMessage(SearchErrors.NETWORK_ERROR)
                 }
 
@@ -231,20 +248,26 @@ class SearchActivity : AppCompatActivity() {
 
     }
 
-    private fun isNightModeEnabled(context: Context): Boolean {
-        return when (context.resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-            Configuration.UI_MODE_NIGHT_YES -> true
-            Configuration.UI_MODE_NIGHT_NO -> false
-            else -> false
-        }
-    }
-
     private fun clearButtonVisibility(s: CharSequence?): Int {
         return if (s.isNullOrEmpty()) {
             View.GONE
         } else {
             View.VISIBLE
         }
+    }
+
+    private fun searchDebounce() {
+        handler.removeCallbacks(searchRunnable)
+        handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
+    }
+
+    private fun clickDebounce(): Boolean {
+        val current = isCLickAllowed
+        if (isCLickAllowed) {
+            isCLickAllowed = false
+            handler.postDelayed({ isCLickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
