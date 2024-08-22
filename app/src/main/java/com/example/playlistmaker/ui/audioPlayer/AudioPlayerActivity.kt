@@ -1,4 +1,4 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.audioPlayer
 
 import android.media.MediaPlayer
 import android.os.Build
@@ -13,15 +13,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.Group
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
-import com.example.playlistmaker.data.PlayerState
-import com.example.playlistmaker.data.Track
-import com.example.playlistmaker.instruments.Formatter
+import com.example.playlistmaker.R
+import com.example.playlistmaker.common.constants.PlayerState
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.common.util.Formatter
 
 class AudioPlayerActivity : AppCompatActivity() {
 
     companion object {
         private const val DELAY_MS = 500L
-        private const val DURATION = 30_000L
     }
 
     private lateinit var handler: Handler
@@ -89,7 +89,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         track.apply {
             trackTitle.text = trackName
             trackArtist.text = artistName
-            trackTime.text = Formatter.msToMinute(trackTimeMillis)
+            trackTime.text = trackTimeMillis
             if (collectionName.isNullOrEmpty()) {
                 groupOfFieldCollection.visibility = View.GONE
             } else {

@@ -1,10 +1,6 @@
-package com.example.playlistmaker.data
+package com.example.playlistmaker.data.dto
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
-
-@Parcelize
-data class Track (
+data class TrackDTO(
     val trackId: Int, //ID трека
     val trackName: String, // Название композиции
     val artistName: String, // Имя исполнителя
@@ -15,13 +11,6 @@ data class Track (
     val primaryGenreName: String, // Жанр трека
     val country: String, // Страна исполнителя
     val previewUrl: String //Ссылка на отрывок трека
-    ): Parcelable {
+) {
 
-    override fun equals(other: Any?): Boolean {
-        return (other as Track).trackId == trackId
-    }
-
-    override fun hashCode(): Int {
-        return trackId.hashCode()
-    }
 }

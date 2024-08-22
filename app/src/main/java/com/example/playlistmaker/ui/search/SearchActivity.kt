@@ -1,10 +1,9 @@
-package com.example.playlistmaker
+package com.example.playlistmaker.ui.search
 
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.provider.MediaStore.Audio.AudioColumns.TRACK
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
@@ -17,18 +16,12 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.data.SearchErrors
-import com.example.playlistmaker.data.Track
-import com.example.playlistmaker.instruments.SearchHistory
-import com.example.playlistmaker.trackApi.ITunesApi
-import com.example.playlistmaker.trackApi.TrackResponse
-import com.example.playlistmaker.trackRecyclerView.OnItemClickListener
-import com.example.playlistmaker.trackRecyclerView.TrackAdapter
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import com.example.playlistmaker.Creator
+import com.example.playlistmaker.R
+import com.example.playlistmaker.common.constants.SearchErrors
+import com.example.playlistmaker.domain.api.TrackInteractor
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.ui.audioPlayer.AudioPlayerActivity
 
 class SearchActivity : AppCompatActivity() {
 
@@ -45,14 +38,11 @@ class SearchActivity : AppCompatActivity() {
 
     private var userInput: String = DEFAULT_VALUE
 
-    private val searchRunnable = Runnable { makeRequest() }
+    private val searchRunnable = Runnable {
+        loadTracks()
+    }
 
-    private val itunesBaseUrl = "https://itunes.apple.com"
-    private val retrofit = Retrofit.Builder()
-        .baseUrl(itunesBaseUrl)
-        .addConverterFactory(GsonConverterFactory.create())
-        .build()
-    private val service = retrofit.create(ITunesApi::class.java)
+    private lateinit var trackInteractor: TrackInteractor
 
     private val tracks = ArrayList<Track>()
     private lateinit var searchAdapter: TrackAdapter
@@ -80,16 +70,16 @@ class SearchActivity : AppCompatActivity() {
         setContentView(R.layout.activity_search)
 
         groupOfTracksList = findViewById(R.id.ll_tracks_list)
-        recyclerView = findViewById<RecyclerView>(R.id.tracks_list)
-        buttonBack = findViewById<ImageView>(R.id.icon_back)
-        clearButtonEditText = findViewById<ImageView>(R.id.icon_clear_search)
+        recyclerView = findViewById(R.id.tracks_list)
+        buttonBack = findViewById(R.id.icon_back)
+        clearButtonEditText = findViewById(R.id.icon_clear_search)
         editText = findViewById(R.id.edit_text_search)
         progressBar = findViewById(R.id.progress_bar)
-        viewGroupForError = findViewById<LinearLayout>(R.id.group_for_error)
-        errorImage = findViewById<ImageView>(R.id.error_image)
-        errorTittle = findViewById<TextView>(R.id.error_tittle)
-        errorSubTittle = findViewById<TextView>(R.id.error_subtittle)
-        reloadButton = findViewById<Button>(R.id.reload_button)
+        viewGroupForError = findViewById(R.id.group_for_error)
+        errorImage = findViewById(R.id.error_image)
+        errorTittle = findViewById(R.id.error_tittle)
+        errorSubTittle = findViewById(R.id.error_subtittle)
+        reloadButton = findViewById(R.id.reload_button)
         historyTittle = findViewById(R.id.history_tittle)
         clearHistoryButton = findViewById(R.id.clear_history_button)
 
@@ -98,6 +88,8 @@ class SearchActivity : AppCompatActivity() {
         buttonBack.setOnClickListener {
             finish()
         }
+
+        trackInteractor = Creator.provideTrackInteractor()
 
         val onItemClickListener = OnItemClickListener { item ->
             if (clickDebounce()) {
@@ -177,44 +169,36 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    private fun makeRequest() {
+    private fun loadTracks() {
         if (editText.text.isNotEmpty()) {
-
-            service.searchTrack(editText.text.toString()).enqueue(object : Callback<TrackResponse> {
-                override fun onResponse(
-                    call: Call<TrackResponse>,
-                    response: Response<TrackResponse>
-                ) {
-                    progressBar.visibility = View.GONE
-                    if (response.code() == 200) {
-                        tracks.clear()
-                        if (response.body()?.results?.isNotEmpty() == true) {
-                            groupOfTracksList.visibility = View.VISIBLE
-                            tracks.addAll(response.body()?.results!!)
-                            searchAdapter.notifyDataSetChanged()
+            trackInteractor.searchTracks(
+                editText.text.toString(),
+                object : TrackInteractor.TrackConsumer {
+                    override fun consume(foundTracks: Pair<Int, List<Track>>) {
+                        handler.post {
+                            progressBar.visibility = View.GONE
+                            if (foundTracks.first == 200) {
+                                tracks.clear()
+                                if (foundTracks.second.isNotEmpty()) {
+                                    groupOfTracksList.visibility = View.VISIBLE
+                                    tracks.addAll(foundTracks.second)
+                                    searchAdapter.notifyDataSetChanged()
+                                }
+                                if (tracks.isEmpty()) {
+                                    tracks.clear()
+                                    searchAdapter.notifyDataSetChanged()
+                                    showMessage(SearchErrors.NOT_FOUND_ERROR)
+                                } else {
+                                    showMessage(SearchErrors.NO_ERRORS)
+                                }
+                            } else {
+                                tracks.clear()
+                                searchAdapter.notifyDataSetChanged()
+                                showMessage(SearchErrors.NETWORK_ERROR)
+                            }
                         }
-                        if (tracks.isEmpty()) {
-                            tracks.clear()
-                            searchAdapter.notifyDataSetChanged()
-                            showMessage(SearchErrors.NOT_FOUND_ERROR)
-                        } else {
-                            showMessage(SearchErrors.NO_ERRORS)
-                        }
-                    } else {
-                        tracks.clear()
-                        searchAdapter.notifyDataSetChanged()
-                        showMessage(SearchErrors.NETWORK_ERROR)
                     }
-                }
-
-                override fun onFailure(call: Call<TrackResponse>, t: Throwable) {
-                    tracks.clear()
-                    searchAdapter.notifyDataSetChanged()
-                    progressBar.visibility = View.GONE
-                    showMessage(SearchErrors.NETWORK_ERROR)
-                }
-
-            })
+                })
         }
     }
 
@@ -289,5 +273,4 @@ class SearchActivity : AppCompatActivity() {
         super.onStop()
         searchHistory.saveTracks()
     }
-
 }

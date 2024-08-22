@@ -1,10 +1,10 @@
-package com.example.playlistmaker.trackRecyclerView
+package com.example.playlistmaker.ui.search
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.Track
+import com.example.playlistmaker.domain.models.Track
 
 class TrackAdapter (private val onItemClickListener: OnItemClickListener) : RecyclerView.Adapter<TrackViewHolder>() {
 

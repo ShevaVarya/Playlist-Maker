@@ -1,4 +1,4 @@
-package com.example.playlistmaker.trackRecyclerView
+package com.example.playlistmaker.ui.search
 
 import android.view.View
 import android.widget.ImageView
@@ -7,8 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.data.Track
-import com.example.playlistmaker.instruments.Formatter
+import com.example.playlistmaker.domain.models.Track
+import com.example.playlistmaker.common.util.Formatter
 
 class TrackViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
 
@@ -20,7 +20,7 @@ class TrackViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
     fun bind(model: Track) {
         trackName.text = model.trackName
         artistName.text = model.artistName
-        trackTime.text = Formatter.msToMinute(model.trackTimeMillis)
+        trackTime.text = model.trackTimeMillis
         Glide.with(view)
             .load(model.artworkUrl100)
             .centerCrop()

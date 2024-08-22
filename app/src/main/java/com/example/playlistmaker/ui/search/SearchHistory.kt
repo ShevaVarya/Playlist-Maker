@@ -1,8 +1,7 @@
-package com.example.playlistmaker.instruments
+package com.example.playlistmaker.ui.search
 
 import android.content.SharedPreferences
-import com.example.playlistmaker.data.Track
-import com.example.playlistmaker.trackRecyclerView.TrackAdapter
+import com.example.playlistmaker.domain.models.Track
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 

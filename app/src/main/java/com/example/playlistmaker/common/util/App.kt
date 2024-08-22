@@ -1,4 +1,4 @@
-package com.example.playlistmaker.instruments
+package com.example.playlistmaker.common.util
 
 import android.app.Application
 import android.content.SharedPreferences
