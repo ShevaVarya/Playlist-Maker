@@ -7,18 +7,12 @@ import android.os.Looper
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.ProgressBar
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.common.constants.SearchErrors
+import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.api.TrackInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.audioPlayer.AudioPlayerActivity
@@ -42,6 +36,8 @@ class SearchActivity : AppCompatActivity() {
         loadTracks()
     }
 
+    private lateinit var binding: ActivitySearchBinding
+
     private lateinit var trackInteractor: TrackInteractor
 
     private val tracks = ArrayList<Track>()
@@ -49,43 +45,16 @@ class SearchActivity : AppCompatActivity() {
     private lateinit var searchHistoryAdapter: TrackAdapter
     private lateinit var searchHistory: SearchHistory
 
-    private lateinit var groupOfTracksList: LinearLayout
-    private lateinit var recyclerView: RecyclerView
-    private lateinit var buttonBack: ImageView
-    private lateinit var clearButtonEditText: ImageView
-    private lateinit var editText: EditText
-    private lateinit var progressBar: ProgressBar
-    private lateinit var viewGroupForError: LinearLayout
-    private lateinit var errorImage: ImageView
-    private lateinit var errorTittle: TextView
-    private lateinit var errorSubTittle: TextView
-    private lateinit var reloadButton: Button
-    private lateinit var historyTittle: TextView
-    private lateinit var clearHistoryButton: Button
-
     private lateinit var handler: Handler
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search)
-
-        groupOfTracksList = findViewById(R.id.ll_tracks_list)
-        recyclerView = findViewById(R.id.tracks_list)
-        buttonBack = findViewById(R.id.icon_back)
-        clearButtonEditText = findViewById(R.id.icon_clear_search)
-        editText = findViewById(R.id.edit_text_search)
-        progressBar = findViewById(R.id.progress_bar)
-        viewGroupForError = findViewById(R.id.group_for_error)
-        errorImage = findViewById(R.id.error_image)
-        errorTittle = findViewById(R.id.error_tittle)
-        errorSubTittle = findViewById(R.id.error_subtittle)
-        reloadButton = findViewById(R.id.reload_button)
-        historyTittle = findViewById(R.id.history_tittle)
-        clearHistoryButton = findViewById(R.id.clear_history_button)
+        binding = ActivitySearchBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         handler = Handler(Looper.getMainLooper())
 
-        buttonBack.setOnClickListener {
+        binding.iconBack.setOnClickListener {
             finish()
         }
 
@@ -110,19 +79,20 @@ class SearchActivity : AppCompatActivity() {
 
         searchAdapter = TrackAdapter(onItemClickListener)
         searchAdapter.tracks = tracks
-        recyclerView.adapter = searchAdapter
-        recyclerView.layoutManager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.tracksList.adapter = searchAdapter
+        binding.tracksList.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
 
         val textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                clearButtonEditText.visibility = clearButtonVisibility(s)
-                groupOfTracksList.visibility = View.GONE
-                viewGroupForError.visibility = View.GONE
-                progressBar.visibility = View.VISIBLE
-                showHistory(editText.hasFocus() && s?.isEmpty() == true)
+                binding.iconClearSearch.visibility = setGoneIfEmpty(s)
+                binding.llTracksList.visibility = setVisibleIfEmpty(s)
+                binding.groupForError.visibility = setVisibleIfEmpty(s)
+                binding.progressBar.visibility = setGoneIfEmpty(s)
+                showHistory(binding.editTextSearch.hasFocus() && s?.isEmpty() == true)
                 searchDebounce()
             }
 
@@ -130,66 +100,65 @@ class SearchActivity : AppCompatActivity() {
                 userInput = s.toString()
             }
         }
-        editText.addTextChangedListener(textWatcher)
+        binding.editTextSearch.addTextChangedListener(textWatcher)
 
-        editText.setOnFocusChangeListener { _, hasFocus ->
-            showHistory(hasFocus && editText.text.isEmpty())
+        binding.editTextSearch.setOnFocusChangeListener { _, hasFocus ->
+            showHistory(hasFocus && binding.editTextSearch.text.isEmpty())
         }
 
-        reloadButton.setOnClickListener {
-            viewGroupForError.visibility = View.GONE
-            progressBar.visibility = View.VISIBLE
+        binding.reloadButton.setOnClickListener {
+            binding.groupForError.visibility = View.GONE
+            binding.progressBar.visibility = View.VISIBLE
             searchDebounce()
         }
 
-        clearButtonEditText.setOnClickListener {
-            editText.setText("")
+        binding.iconClearSearch.setOnClickListener {
+            binding.editTextSearch.setText("")
             tracks.clear()
             searchAdapter.notifyDataSetChanged()
             showMessage(SearchErrors.NO_ERRORS)
         }
 
-        clearHistoryButton.setOnClickListener {
+        binding.clearHistoryButton.setOnClickListener {
             searchHistory.clearSearchHistory()
             showHistory(false)
         }
-
-
     }
 
+    //взаимодействие со вью - остается
     private fun showHistory(hasFocus: Boolean) {
         if (hasFocus && !searchHistory.isEmptyHistory()) {
-            recyclerView.adapter = searchHistoryAdapter
-            historyTittle.visibility = View.VISIBLE
-            clearHistoryButton.visibility = View.VISIBLE
+            binding.tracksList.adapter = searchHistoryAdapter
+            binding.historyTittle.visibility = View.VISIBLE
+            binding.clearHistoryButton.visibility = View.VISIBLE
+            binding.llTracksList.visibility = View.VISIBLE
         } else {
-            recyclerView.adapter = searchAdapter
-            historyTittle.visibility = View.GONE
-            clearHistoryButton.visibility = View.GONE
+            binding.tracksList.adapter = searchAdapter
+            binding.historyTittle.visibility = View.GONE
+            binding.clearHistoryButton.visibility = View.GONE
         }
     }
 
     private fun loadTracks() {
-        if (editText.text.isNotEmpty()) {
+        if (binding.editTextSearch.text.isNotEmpty()) {
             trackInteractor.searchTracks(
-                editText.text.toString(),
+                binding.editTextSearch.text.toString(),
                 object : TrackInteractor.TrackConsumer {
                     override fun consume(foundTracks: Pair<Int, List<Track>>) {
                         handler.post {
-                            progressBar.visibility = View.GONE
+                            binding.progressBar.visibility = View.GONE
                             if (foundTracks.first == 200) {
                                 tracks.clear()
                                 if (foundTracks.second.isNotEmpty()) {
-                                    groupOfTracksList.visibility = View.VISIBLE
+                                    binding.llTracksList.visibility = View.VISIBLE
                                     tracks.addAll(foundTracks.second)
                                     searchAdapter.notifyDataSetChanged()
+                                    showMessage(SearchErrors.NO_ERRORS)
                                 }
-                                if (tracks.isEmpty()) {
+                                else {
                                     tracks.clear()
                                     searchAdapter.notifyDataSetChanged()
                                     showMessage(SearchErrors.NOT_FOUND_ERROR)
-                                } else {
-                                    showMessage(SearchErrors.NO_ERRORS)
                                 }
                             } else {
                                 tracks.clear()
@@ -202,39 +171,44 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    //взаимодействие со вью - остается
     private fun showMessage(tag: SearchErrors) {
         when (tag) {
             SearchErrors.NOT_FOUND_ERROR -> {
-                errorImage.setImageResource(R.drawable.ic_bad_search)
-                errorTittle.setText(R.string.not_found)
+                with(binding) {
+                    errorImage.setImageResource(R.drawable.ic_bad_search)
+                    errorTittle.setText(R.string.not_found)
 
-                viewGroupForError.visibility = View.VISIBLE
-                errorImage.visibility = View.VISIBLE
-                errorTittle.visibility = View.VISIBLE
-                errorSubTittle.visibility = View.GONE
-                reloadButton.visibility = View.GONE
+                    groupForError.visibility = View.VISIBLE
+                    errorImage.visibility = View.VISIBLE
+                    errorTittle.visibility = View.VISIBLE
+                    errorSubtittle.visibility = View.GONE
+                    reloadButton.visibility = View.GONE
+                }
             }
 
             SearchErrors.NETWORK_ERROR -> {
-                errorImage.setImageResource(R.drawable.ic_bad_connection)
-                errorTittle.setText(R.string.connection_problem)
-                errorSubTittle.setText(R.string.connection_problem_additional)
+                with(binding) {
+                    errorImage.setImageResource(R.drawable.ic_bad_connection)
+                    errorTittle.setText(R.string.connection_problem)
+                    errorSubtittle.setText(R.string.connection_problem_additional)
 
-                viewGroupForError.visibility = View.VISIBLE
-                errorImage.visibility = View.VISIBLE
-                errorTittle.visibility = View.VISIBLE
-                errorSubTittle.visibility = View.VISIBLE
-                reloadButton.visibility = View.VISIBLE
+                    groupForError.visibility = View.VISIBLE
+                    errorImage.visibility = View.VISIBLE
+                    errorTittle.visibility = View.VISIBLE
+                    errorSubtittle.visibility = View.VISIBLE
+                    reloadButton.visibility = View.VISIBLE
+                }
             }
 
             SearchErrors.NO_ERRORS -> {
-                viewGroupForError.visibility = View.GONE
+                binding.groupForError.visibility = View.GONE
             }
         }
-
     }
 
-    private fun clearButtonVisibility(s: CharSequence?): Int {
+    //установка для вью - остается
+    private fun setGoneIfEmpty(s: CharSequence?): Int {
         return if (s.isNullOrEmpty()) {
             View.GONE
         } else {
@@ -242,11 +216,22 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
+    //установка для вью - остается
+    private fun setVisibleIfEmpty(s: CharSequence?): Int {
+        return if (s.isNullOrEmpty()) {
+            View.GONE
+        } else {
+            View.VISIBLE
+        }
+    }
+
+    //как будто надо убрать в презентор
     private fun searchDebounce() {
         handler.removeCallbacks(searchRunnable)
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
+    //как будто надо убрать в презентор
     private fun clickDebounce(): Boolean {
         val current = isCLickAllowed
         if (isCLickAllowed) {
@@ -265,7 +250,7 @@ class SearchActivity : AppCompatActivity() {
         super.onRestoreInstanceState(savedInstanceState)
         userInput = savedInstanceState.getString(KEY, DEFAULT_VALUE)
         if (userInput.isNotEmpty()) {
-            editText.setText(userInput)
+            binding.editTextSearch.setText(userInput)
         }
     }
 

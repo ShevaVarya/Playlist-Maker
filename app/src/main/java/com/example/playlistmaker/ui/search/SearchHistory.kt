@@ -21,7 +21,7 @@ class SearchHistory(
         val json = sharedPreferences.getString(SHARED_PREFERENCES_TRACKS_KEY, null)
         if (json != null) {
             val tracks = createTracksFromJson(json)
-            adapter.tracks.clear() //нужна ли эта строка тут?
+            adapter.tracks.clear()
             adapter.tracks = tracks
             adapter.notifyDataSetChanged()
         }

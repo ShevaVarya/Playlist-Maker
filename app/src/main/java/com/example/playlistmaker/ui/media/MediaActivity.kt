@@ -1,12 +1,16 @@
 package com.example.playlistmaker.ui.media
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.playlistmaker.R
+import androidx.appcompat.app.AppCompatActivity
+import com.example.playlistmaker.databinding.ActivityMediaBinding
 
 class MediaActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMediaBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_media)
+        binding = ActivityMediaBinding.inflate(layoutInflater)
+        setContentView(binding.root)
     }
 }
