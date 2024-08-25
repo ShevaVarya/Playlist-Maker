@@ -13,7 +13,7 @@ import com.example.playlistmaker.Creator
 import com.example.playlistmaker.R
 import com.example.playlistmaker.common.constants.SearchErrors
 import com.example.playlistmaker.databinding.ActivitySearchBinding
-import com.example.playlistmaker.domain.api.TrackInteractor
+import com.example.playlistmaker.domain.api.SearchInteractor
 import com.example.playlistmaker.domain.models.Track
 import com.example.playlistmaker.ui.audioPlayer.AudioPlayerActivity
 
@@ -22,10 +22,10 @@ class SearchActivity : AppCompatActivity() {
     private companion object {
         const val KEY = "KEY"
         const val DEFAULT_VALUE = ""
-        const val SHARED_PREFERENCES_NAME_FILE = "shared_preferences_history_search"
         const val INTENT_KEY = "TRACK"
         const val SEARCH_DEBOUNCE_DELAY = 2000L
         const val CLICK_DEBOUNCE_DELAY = 1000L
+        const val MAX_SIZES_SEARCH_HISTORY = 10
     }
 
     private var isCLickAllowed = true
@@ -38,12 +38,11 @@ class SearchActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivitySearchBinding
 
-    private lateinit var trackInteractor: TrackInteractor
+    private lateinit var searchInteractor: SearchInteractor
 
     private val tracks = ArrayList<Track>()
     private lateinit var searchAdapter: TrackAdapter
     private lateinit var searchHistoryAdapter: TrackAdapter
-    private lateinit var searchHistory: SearchHistory
 
     private lateinit var handler: Handler
 
@@ -58,11 +57,11 @@ class SearchActivity : AppCompatActivity() {
             finish()
         }
 
-        trackInteractor = Creator.provideTrackInteractor()
+        searchInteractor = Creator.provideSearchInteractor()
 
         val onItemClickListener = OnItemClickListener { item ->
             if (clickDebounce()) {
-                searchHistory.addTrackToSearchHistory(item)
+                addTrackToHistory(item)
                 val intent = Intent(this, AudioPlayerActivity::class.java).apply {
                     putExtra(INTENT_KEY, item)
                 }
@@ -71,11 +70,8 @@ class SearchActivity : AppCompatActivity() {
         }
 
         searchHistoryAdapter = TrackAdapter(onItemClickListener)
-        searchHistoryAdapter.tracks = tracks
-        searchHistory = SearchHistory(
-            getSharedPreferences(SHARED_PREFERENCES_NAME_FILE, MODE_PRIVATE),
-            searchHistoryAdapter
-        )
+        searchHistoryAdapter.tracks =
+            searchInteractor.gerFromSharedPreferences().toMutableList() as ArrayList<Track>
 
         searchAdapter = TrackAdapter(onItemClickListener)
         searchAdapter.tracks = tracks
@@ -120,14 +116,42 @@ class SearchActivity : AppCompatActivity() {
         }
 
         binding.clearHistoryButton.setOnClickListener {
-            searchHistory.clearSearchHistory()
+            searchInteractor.clearSharedPreferences()
+            searchHistoryAdapter.tracks.clear()
+            searchHistoryAdapter.notifyDataSetChanged()
             showHistory(false)
         }
     }
 
-    //взаимодействие со вью - остается
+    private fun addTrackToHistory(item: Track) {
+        val position = checkAndRemoveItem(item)
+        if (position != null) searchHistoryAdapter.notifyItemRemoved(position)
+        if (searchHistoryAdapter.tracks.size == MAX_SIZES_SEARCH_HISTORY) {
+            searchHistoryAdapter.tracks.removeLast()
+            searchHistoryAdapter.notifyItemRemoved(MAX_SIZES_SEARCH_HISTORY - 1)
+        }
+        searchHistoryAdapter.tracks.add(0, item)
+        searchHistoryAdapter.notifyItemInserted(0)
+        searchInteractor.saveInSharedPreferences(searchHistoryAdapter.tracks)
+    }
+
+    private fun checkAndRemoveItem(track: Track): Int? {
+        val index = searchHistoryAdapter.tracks.indexOf(track)
+        return if (index != -1) {
+            searchHistoryAdapter.tracks.remove(track)
+            index
+        } else {
+            null
+        }
+    }
+
+    private fun isEmptyHistory(): Boolean {
+        val tracks = searchInteractor.gerFromSharedPreferences()
+        return tracks.isEmpty()
+    }
+
     private fun showHistory(hasFocus: Boolean) {
-        if (hasFocus && !searchHistory.isEmptyHistory()) {
+        if (hasFocus && !isEmptyHistory()) {
             binding.tracksList.adapter = searchHistoryAdapter
             binding.historyTittle.visibility = View.VISIBLE
             binding.clearHistoryButton.visibility = View.VISIBLE
@@ -141,9 +165,9 @@ class SearchActivity : AppCompatActivity() {
 
     private fun loadTracks() {
         if (binding.editTextSearch.text.isNotEmpty()) {
-            trackInteractor.searchTracks(
+            searchInteractor.searchTracks(
                 binding.editTextSearch.text.toString(),
-                object : TrackInteractor.TrackConsumer {
+                object : SearchInteractor.TrackConsumer {
                     override fun consume(foundTracks: Pair<Int, List<Track>>) {
                         handler.post {
                             binding.progressBar.visibility = View.GONE
@@ -154,8 +178,7 @@ class SearchActivity : AppCompatActivity() {
                                     tracks.addAll(foundTracks.second)
                                     searchAdapter.notifyDataSetChanged()
                                     showMessage(SearchErrors.NO_ERRORS)
-                                }
-                                else {
+                                } else {
                                     tracks.clear()
                                     searchAdapter.notifyDataSetChanged()
                                     showMessage(SearchErrors.NOT_FOUND_ERROR)
@@ -171,7 +194,6 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    //взаимодействие со вью - остается
     private fun showMessage(tag: SearchErrors) {
         when (tag) {
             SearchErrors.NOT_FOUND_ERROR -> {
@@ -207,7 +229,6 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    //установка для вью - остается
     private fun setGoneIfEmpty(s: CharSequence?): Int {
         return if (s.isNullOrEmpty()) {
             View.GONE
@@ -216,7 +237,6 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    //установка для вью - остается
     private fun setVisibleIfEmpty(s: CharSequence?): Int {
         return if (s.isNullOrEmpty()) {
             View.GONE
@@ -225,13 +245,11 @@ class SearchActivity : AppCompatActivity() {
         }
     }
 
-    //как будто надо убрать в презентор
     private fun searchDebounce() {
         handler.removeCallbacks(searchRunnable)
         handler.postDelayed(searchRunnable, SEARCH_DEBOUNCE_DELAY)
     }
 
-    //как будто надо убрать в презентор
     private fun clickDebounce(): Boolean {
         val current = isCLickAllowed
         if (isCLickAllowed) {
@@ -256,6 +274,6 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        searchHistory.saveTracks()
+        searchInteractor.saveInSharedPreferences(searchHistoryAdapter.tracks)
     }
 }
