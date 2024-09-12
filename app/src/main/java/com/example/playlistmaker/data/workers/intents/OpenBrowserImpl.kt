@@ -1,4 +1,4 @@
-package com.example.playlistmaker.domain.intents
+package com.example.playlistmaker.data.workers.intents
 
 import android.content.Context
 import android.content.Intent
@@ -9,7 +9,7 @@ interface OpenBrowser {
     fun openBrowser(context: Context, url: String)
 }
 
-class OpenBrowserImpl() : OpenBrowser{
+class OpenBrowserImpl() : OpenBrowser {
 
     override fun openBrowser(context: Context, url: String) {
         val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))

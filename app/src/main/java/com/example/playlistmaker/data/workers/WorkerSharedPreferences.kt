@@ -1,8 +1,8 @@
 package com.example.playlistmaker.data.workers
 
 import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
-import com.example.playlistmaker.common.util.App
-import com.example.playlistmaker.common.util.SHARED_PREFERENCES_NAME_FILE
+import com.example.playlistmaker.App
+import com.example.playlistmaker.common.constants.Utils.SHARED_PREFERENCES_NAME_FILE
 
 interface WorkerSharedPreferences {
     fun saveInSharedPreferences(json: String)

@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.search
+package com.example.playlistmaker.presentation.ui.search
 
 import android.content.Intent
 import android.os.Bundle
@@ -15,7 +15,8 @@ import com.example.playlistmaker.common.constants.SearchErrors
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.domain.api.SearchInteractor
 import com.example.playlistmaker.domain.models.Track
-import com.example.playlistmaker.ui.audioPlayer.AudioPlayerActivity
+import com.example.playlistmaker.presentation.ui.audioPlayer.AudioPlayerActivity
+import com.google.gson.Gson
 
 class SearchActivity : AppCompatActivity() {
 
@@ -63,7 +64,7 @@ class SearchActivity : AppCompatActivity() {
             if (clickDebounce()) {
                 addTrackToHistory(item)
                 val intent = Intent(this, AudioPlayerActivity::class.java).apply {
-                    putExtra(INTENT_KEY, item)
+                    putExtra(INTENT_KEY, createJson(item))
                 }
                 startActivity(intent)
             }
@@ -121,6 +122,10 @@ class SearchActivity : AppCompatActivity() {
             searchHistoryAdapter.notifyDataSetChanged()
             showHistory(false)
         }
+    }
+
+    private fun createJson(item: Any): String {
+        return Gson().toJson(item)
     }
 
     private fun addTrackToHistory(item: Track) {

@@ -1,4 +1,4 @@
-package com.example.playlistmaker.ui.audioPlayer
+package com.example.playlistmaker.presentation.ui.audioPlayer
 
 import android.media.MediaPlayer
 import android.os.Build
@@ -14,6 +14,10 @@ import com.example.playlistmaker.common.constants.PlayerState
 import com.example.playlistmaker.common.util.Formatter
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.domain.models.Track
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import kotlinx.parcelize.Parcelize
+import kotlin.reflect.KClass
 
 class AudioPlayerActivity : AppCompatActivity() {
 
@@ -35,11 +39,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding = ActivityAudioPlayerBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (Build.VERSION.SDK_INT >= 33) {
-            intent.getParcelableExtra("TRACK", Track::class.java)?.let { track = it }
-        } else {
-            intent.getParcelableExtra<Track>("TRACK")?.let { track = it }
-        }
+        track = createItemFromJson(intent.getStringExtra("TRACK") ?: "", Track::class.java)
 
         binding.iconBack.setOnClickListener {
             finish()
@@ -74,6 +74,10 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding.ibPlay.setOnClickListener {
             playbackControl()
         }
+    }
+
+    private fun <T: Any> createItemFromJson(json: String, type: Class<T>): T{
+        return Gson().fromJson(json, type)
     }
 
     private fun playbackControl() {

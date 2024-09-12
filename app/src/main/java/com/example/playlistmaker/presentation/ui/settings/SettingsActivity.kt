@@ -1,11 +1,11 @@
-package com.example.playlistmaker.ui.settings
+package com.example.playlistmaker.presentation.ui.settings
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.example.playlistmaker.App
 import com.example.playlistmaker.Creator
-import com.example.playlistmaker.common.util.App
+import com.example.playlistmaker.data.IntentType
 import com.example.playlistmaker.databinding.ActivitySettingsBinding
-import com.example.playlistmaker.domain.implementation.IntentType
 
 class SettingsActivity : AppCompatActivity() {
 
@@ -20,7 +20,7 @@ class SettingsActivity : AppCompatActivity() {
             finish()
         }
 
-        val settingsInteractor = Creator.provideSettingsInteractor()
+        val settingsInteractor = Creator.provideSettingsInteractor(this@SettingsActivity)
 
         with(binding) {
             switchNightMode.isChecked = (applicationContext as App).darkTheme
@@ -29,15 +29,15 @@ class SettingsActivity : AppCompatActivity() {
             }
 
             shareApp.setOnClickListener {
-                settingsInteractor.makeIntent(IntentType.SEND_MESSAGE, this@SettingsActivity)
+                settingsInteractor.makeIntent(IntentType.SEND_MESSAGE)
             }
 
             writeInSupport.setOnClickListener {
-                settingsInteractor.makeIntent(IntentType.SEND_EMAIL, this@SettingsActivity)
+                settingsInteractor.makeIntent(IntentType.SEND_EMAIL)
             }
 
             userAgreement.setOnClickListener {
-                settingsInteractor.makeIntent(IntentType.OPEN_BROWSER, this@SettingsActivity)
+                settingsInteractor.makeIntent(IntentType.OPEN_BROWSER)
             }
         }
     }
