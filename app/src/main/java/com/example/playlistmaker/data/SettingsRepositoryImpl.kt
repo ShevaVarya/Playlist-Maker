@@ -12,11 +12,8 @@ import com.example.playlistmaker.data.workers.intents.OpenBrowser
 import com.example.playlistmaker.data.workers.intents.SendEmail
 import com.example.playlistmaker.data.workers.intents.SendMessage
 import com.example.playlistmaker.domain.api.SettingsRepository
+import com.example.playlistmaker.domain.models.IntentType
 
-
-enum class IntentType {
-    OPEN_BROWSER, SEND_EMAIL, SEND_MESSAGE
-}
 
 class SettingsRepositoryImpl(
     private val openBrowser: OpenBrowser,
