@@ -13,3 +13,11 @@
 .externalNativeBuild
 .cxx
 local.properties
+# IntelliJ IDEA
+.idea/
+*.iws
+*.ipr
+
+# IntelliJ IDEA artifact files
+out/
+
