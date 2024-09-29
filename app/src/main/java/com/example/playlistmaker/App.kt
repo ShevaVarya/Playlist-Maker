@@ -23,7 +23,7 @@ class App : Application() {
         super.onCreate()
         instance = this
 
-        settingsInteractor = Creator.provideSettingsInteractor(instance.applicationContext)
+        settingsInteractor = Creator.provideSettingsInteractor()
 
         darkTheme = settingsInteractor.isNightTheme()
         AppCompatDelegate.setDefaultNightMode(

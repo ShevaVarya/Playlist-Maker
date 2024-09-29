@@ -8,9 +8,7 @@ import com.example.playlistmaker.common.Utils.SHARED_PREFERENCES_NAME_FILE
 import com.example.playlistmaker.settings.domain.api.SettingsRepository
 
 
-class SettingsRepositoryImpl(
-
-) : SettingsRepository {
+class SettingsRepositoryImpl() : SettingsRepository {
     private var darkTheme = false
     private val sharedPreferences =
         App.getContext().getSharedPreferences(SHARED_PREFERENCES_NAME_FILE, MODE_PRIVATE)
