@@ -22,7 +22,6 @@ class SettingsViewModel(
                 val application = (this[APPLICATION_KEY] as App)
                 SettingsViewModel(sharingInteractor, application)
             }
-
         }
     }
 

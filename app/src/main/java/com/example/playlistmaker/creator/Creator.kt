@@ -1,6 +1,9 @@
 package com.example.playlistmaker.creator
 
 import android.content.Context
+import android.media.MediaPlayer
+import com.example.playlistmaker.player.data.PlayerInteractorImpl
+import com.example.playlistmaker.player.domain.api.PlayerInteractor
 import com.example.playlistmaker.search.data.SharedPreferencesRepositoryImpl
 import com.example.playlistmaker.search.data.TrackRepositoryImpl
 import com.example.playlistmaker.search.data.network.RetrofitNetworkClient
@@ -11,7 +14,6 @@ import com.example.playlistmaker.search.domain.implementation.SearchInteractorIm
 import com.example.playlistmaker.settings.data.SettingsRepositoryImpl
 import com.example.playlistmaker.settings.data.workers.WorkerSharedPreferencesImpl
 import com.example.playlistmaker.settings.domain.api.SettingsInteractor
-import com.example.playlistmaker.settings.domain.api.SettingsRepository
 import com.example.playlistmaker.settings.domain.implementation.SettingsInteractorImpl
 import com.example.playlistmaker.sharing.data.workers.ExternalNavigator
 import com.example.playlistmaker.sharing.domain.api.SharingInteractor
@@ -40,11 +42,12 @@ object Creator {
     }
 
     //
-    fun provideSettingsInteractor(context: Context): SettingsInteractor {
-        return SettingsInteractorImpl(getSettingsRepository(context))
+    fun provideSettingsInteractor(): SettingsInteractor {
+        return SettingsInteractorImpl(SettingsRepositoryImpl())
     }
 
-    private fun getSettingsRepository(context: Context): SettingsRepository {
-        return SettingsRepositoryImpl()
+    //
+    fun providePlayerInteractor(mediaPlayer: MediaPlayer, trackUrl: String): PlayerInteractor {
+        return PlayerInteractorImpl(mediaPlayer, trackUrl)
     }
 }
