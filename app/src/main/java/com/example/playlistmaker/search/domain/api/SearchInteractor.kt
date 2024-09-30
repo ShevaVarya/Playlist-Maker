@@ -6,7 +6,7 @@ interface SearchInteractor {
     fun searchTracks(text: String, consumer: TrackConsumer)
 
     interface TrackConsumer {
-        fun consume(foundTracks: Pair<Int,List<Track>>)
+        fun consume(foundTracks: List<Track>?, errorMessage: String?)
     }
 
     fun saveInSharedPreferences(tracks: List<Track>)

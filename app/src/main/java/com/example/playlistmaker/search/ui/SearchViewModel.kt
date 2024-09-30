@@ -1,0 +1,125 @@
+package com.example.playlistmaker.search.ui
+
+import android.os.Handler
+import android.os.Looper
+import android.os.SystemClock
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.playlistmaker.App
+import com.example.playlistmaker.R
+import com.example.playlistmaker.search.domain.api.SearchInteractor
+import com.example.playlistmaker.search.domain.models.Track
+import com.example.playlistmaker.search.ui.models.SearchState
+
+class SearchViewModel(
+    private val searchInteractor: SearchInteractor,
+    private val application: App
+) : ViewModel() {
+
+    companion object {
+        const val SEARCH_DEBOUNCE_DELAY = 2000L
+        const val CLICK_DEBOUNCE_DELAY = 1000L
+        private val SEARCH_REQUEST_TOKEN = Any()
+
+        fun getViewModelFactory(
+            searchInteractor: SearchInteractor
+        ): ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = (this[APPLICATION_KEY] as App)
+                SearchViewModel(searchInteractor, application)
+            }
+        }
+    }
+
+    private val handler = Handler(Looper.getMainLooper())
+
+    private var isCLickAllowed = true
+
+    private val stateLiveData = MutableLiveData<SearchState>()
+    fun getSearchState(): LiveData<SearchState> = stateLiveData
+
+    private fun renderState(state: SearchState) {
+        stateLiveData.postValue(state)
+    }
+
+    fun searchDebounce(editText: String) {
+        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
+
+        val searchRunnable = Runnable { loadTracks(editText) }
+
+        val postTime = SystemClock.uptimeMillis() + SEARCH_DEBOUNCE_DELAY
+        handler.postAtTime(
+            searchRunnable,
+            SEARCH_REQUEST_TOKEN,
+            postTime,
+        )
+    }
+
+    fun clickDebounce(): Boolean {
+        val current = isCLickAllowed
+        if (isCLickAllowed) {
+            isCLickAllowed = false
+            handler.postDelayed({ isCLickAllowed = true }, CLICK_DEBOUNCE_DELAY)
+        }
+        return current
+    }
+
+    fun isEmptyHistory(): Boolean {
+        val tracks = searchInteractor.gerFromSharedPreferences()
+        return tracks.isEmpty()
+    }
+
+    fun saveInSharedPreferences(tracks: List<Track>) {
+        searchInteractor.saveInSharedPreferences(tracks)
+    }
+
+    private fun loadTracks(editText: String) {
+        searchInteractor.searchTracks(
+            editText,
+            object : SearchInteractor.TrackConsumer {
+                override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
+                    val tracks = mutableListOf<Track>()
+                    if (foundTracks != null) {
+                        tracks.clear()
+                        tracks.addAll(foundTracks)
+                    }
+
+                    when {
+                        errorMessage != null -> {
+                            renderState(
+                                SearchState.Error(
+                                    errorMessageTitle = application.getString(R.string.connection_problem),
+                                    errorMessageSubtitle = application.getString(R.string.connection_problem_additional)
+                                )
+                            )
+                        }
+
+                        tracks.isEmpty() -> {
+                            renderState(
+                                SearchState.NotFound(
+                                    message = application.getString(R.string.not_found)
+                                )
+                            )
+                        }
+
+                        else -> {
+                            renderState(
+                                SearchState.ContentSearch(
+                                    tracks = tracks
+                                )
+                            )
+                        }
+                    }
+                }
+            })
+    }
+
+    override fun onCleared() {
+        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
+    }
+}

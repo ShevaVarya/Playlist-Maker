@@ -1,5 +1,6 @@
 package com.example.playlistmaker.search.domain.implementation
 
+import com.example.playlistmaker.common.util.Resource
 import com.example.playlistmaker.search.domain.api.SearchInteractor
 import com.example.playlistmaker.search.domain.api.SharedPreferencesRepository
 import com.example.playlistmaker.search.domain.api.TrackRepository
@@ -12,7 +13,14 @@ class SearchInteractorImpl(
 
     override fun searchTracks(text: String, consumer: SearchInteractor.TrackConsumer) {
         val thread = Thread {
-            consumer.consume(trackRepository.searchTrack(text))
+            when(val resource = trackRepository.searchTrack(text)) {
+                is Resource.Success -> {
+                    consumer.consume(resource.data, null)
+                }
+                is Resource.Error -> {
+                    consumer.consume(null, resource.message)
+                }
+            }
         }
         thread.start()
     }
