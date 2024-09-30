@@ -62,7 +62,10 @@ class SearchActivity : AppCompatActivity() {
 
         val onItemClickListener = OnItemClickListener { item ->
             if (viewModel.clickDebounce()) {
-                addTrackToHistory(item)
+                val list = viewModel.addTrackToHistory(item)
+                searchHistoryAdapter.tracks.clear()
+                searchHistoryAdapter.tracks.addAll(list)
+                searchHistoryAdapter.notifyDataSetChanged()
                 val intent = Intent(this, AudioPlayerActivity::class.java).apply {
                     putExtra(INTENT_KEY, createJson(item))
                 }
@@ -86,7 +89,7 @@ class SearchActivity : AppCompatActivity() {
                 if (binding.editTextSearch.hasFocus() && s?.isEmpty() == true && !viewModel.isEmptyHistory()) {
                     render(
                         SearchState.ContentHistory(
-                            searchInteractor.gerFromSharedPreferences()
+                            viewModel.getFromSharedPreferences()
                                 .toMutableList() as ArrayList<Track>
                         )
                     )
@@ -109,7 +112,7 @@ class SearchActivity : AppCompatActivity() {
             if (hasFocus && binding.editTextSearch.text.isEmpty() && !viewModel.isEmptyHistory()) {
                 render(
                     SearchState.ContentHistory(
-                        searchInteractor.gerFromSharedPreferences()
+                        viewModel.getFromSharedPreferences()
                             .toMutableList() as ArrayList<Track>
                     )
                 )
@@ -186,7 +189,7 @@ class SearchActivity : AppCompatActivity() {
         binding.clearHistoryButton.visibility = View.GONE
         binding.groupForError.visibility = View.GONE
 
-        searchInteractor.clearSharedPreferences()
+        viewModel.clearSharedPreferences()
         searchHistoryAdapter.tracks.clear()
         searchHistoryAdapter.notifyDataSetChanged()
     }
@@ -235,29 +238,6 @@ class SearchActivity : AppCompatActivity() {
         return Gson().toJson(item)
     }
 
-    private fun addTrackToHistory(item: Track) {
-        val position = checkAndRemoveItem(item)
-        if (position != null) searchHistoryAdapter.notifyItemRemoved(position)
-        if (searchHistoryAdapter.tracks.size == MAX_SIZES_SEARCH_HISTORY) {
-            searchHistoryAdapter.tracks.removeLast()
-            searchHistoryAdapter.notifyItemRemoved(MAX_SIZES_SEARCH_HISTORY - 1)
-        }
-        searchHistoryAdapter.tracks.add(0, item)
-        searchHistoryAdapter.notifyItemInserted(0)
-
-        viewModel.saveInSharedPreferences(searchHistoryAdapter.tracks)
-    }
-
-    private fun checkAndRemoveItem(track: Track): Int? {
-        val index = searchHistoryAdapter.tracks.indexOf(track)
-        return if (index != -1) {
-            searchHistoryAdapter.tracks.remove(track)
-            index
-        } else {
-            null
-        }
-    }
-
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString(KEY, userInput)
@@ -273,6 +253,6 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onStop() {
         super.onStop()
-        searchInteractor.saveInSharedPreferences(searchHistoryAdapter.tracks)
+        viewModel.saveInSharedPreferences(searchHistoryAdapter.tracks)
     }
 }

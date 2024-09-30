@@ -10,6 +10,6 @@ interface SearchInteractor {
     }
 
     fun saveInSharedPreferences(tracks: List<Track>)
-    fun gerFromSharedPreferences(): List<Track>
+    fun getFromSharedPreferences(): List<Track>
     fun clearSharedPreferences()
 }

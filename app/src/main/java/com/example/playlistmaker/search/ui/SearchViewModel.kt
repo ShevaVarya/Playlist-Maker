@@ -24,6 +24,8 @@ class SearchViewModel(
     companion object {
         const val SEARCH_DEBOUNCE_DELAY = 2000L
         const val CLICK_DEBOUNCE_DELAY = 1000L
+        const val MAX_SIZES_SEARCH_HISTORY = 10
+
         private val SEARCH_REQUEST_TOKEN = Any()
 
         fun getViewModelFactory(
@@ -70,8 +72,32 @@ class SearchViewModel(
     }
 
     fun isEmptyHistory(): Boolean {
-        val tracks = searchInteractor.gerFromSharedPreferences()
+        val tracks = searchInteractor.getFromSharedPreferences()
         return tracks.isEmpty()
+    }
+
+    fun addTrackToHistory(item: Track): List<Track> {
+        val tracks = getFromSharedPreferences().toMutableList()
+
+        tracks.remove(item)
+
+        if (tracks.size == MAX_SIZES_SEARCH_HISTORY) {
+            tracks.removeLast()
+        }
+        tracks.add(0, item)
+
+
+        saveInSharedPreferences(tracks)
+
+        return tracks
+    }
+
+    fun clearSharedPreferences() {
+        searchInteractor.clearSharedPreferences()
+    }
+
+    fun getFromSharedPreferences(): List<Track> {
+        return searchInteractor.getFromSharedPreferences()
     }
 
     fun saveInSharedPreferences(tracks: List<Track>) {

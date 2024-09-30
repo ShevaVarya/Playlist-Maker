@@ -29,7 +29,7 @@ class SearchInteractorImpl(
         sharedPreferencesRepository.saveInSharedPreferences(tracks)
     }
 
-    override fun gerFromSharedPreferences(): List<Track> {
+    override fun getFromSharedPreferences(): List<Track> {
         return sharedPreferencesRepository.gerFromSharedPreferences()
     }
 
