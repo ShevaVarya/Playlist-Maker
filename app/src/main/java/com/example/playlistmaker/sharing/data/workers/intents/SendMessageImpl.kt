@@ -14,6 +14,7 @@ class SendMessageImpl() : SendMessage {
         val intent = Intent(Intent.ACTION_SEND).apply {
             type = "text/*"
             putExtra(Intent.EXTRA_TEXT, value)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         startActivity(context, intent, null)
     }

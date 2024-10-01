@@ -17,6 +17,7 @@ class SendEmailImpl() : SendEmail {
             putExtra(Intent.EXTRA_EMAIL, arrayOf(mail))
             putExtra(Intent.EXTRA_SUBJECT, subject)
             putExtra(Intent.EXTRA_TEXT, message)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         startActivity(context, intent, null)
     }

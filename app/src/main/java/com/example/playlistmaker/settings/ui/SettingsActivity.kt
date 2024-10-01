@@ -11,7 +11,12 @@ class SettingsActivity : AppCompatActivity() {
     private val binding: ActivitySettingsBinding by lazy {
         ActivitySettingsBinding.inflate(layoutInflater)
     }
-    private lateinit var viewModel: SettingsViewModel
+    private val viewModel: SettingsViewModel by lazy {
+        ViewModelProvider(
+            this,
+            SettingsViewModel.getViewModelFactory()
+        )[SettingsViewModel::class.java]
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -20,11 +25,6 @@ class SettingsActivity : AppCompatActivity() {
         binding.backFromSettings.setOnClickListener {
             finish()
         }
-
-        viewModel = ViewModelProvider(
-            this,
-            SettingsViewModel.getViewModelFactory()
-        )[SettingsViewModel::class.java]
 
         with(binding) {
             switchNightMode.isChecked = viewModel.isChecked()

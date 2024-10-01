@@ -17,7 +17,12 @@ import com.google.gson.Gson
 
 class AudioPlayerActivity : AppCompatActivity() {
 
-    private lateinit var viewModel: PlayerViewModel
+    private val viewModel: PlayerViewModel by lazy {
+        ViewModelProvider(
+            this,
+            PlayerViewModel.getViewModelFactory(mediaPlayer, track.previewUrl)
+        )[PlayerViewModel::class.java]
+    }
 
     private lateinit var track: Track
 
@@ -36,12 +41,6 @@ class AudioPlayerActivity : AppCompatActivity() {
         binding.iconBack.setOnClickListener {
             finish()
         }
-
-        viewModel = ViewModelProvider(
-            this,
-            PlayerViewModel.getViewModelFactory(mediaPlayer, track.previewUrl)
-        )[PlayerViewModel::class.java]
-
 
         viewModel.getPlayerState().observe(this) { playerState ->
             updateState(playerState)

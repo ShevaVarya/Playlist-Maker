@@ -12,7 +12,9 @@ interface OpenBrowser {
 class OpenBrowserImpl() : OpenBrowser {
 
     override fun openBrowser(context: Context, url: String) {
-        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url)).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        }
         startActivity(context, intent, null)
     }
 }
