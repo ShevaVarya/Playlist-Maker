@@ -8,14 +8,6 @@ import com.example.playlistmaker.settings.domain.api.SettingsInteractor
 
 class App : Application() {
 
-    companion object {
-        private lateinit var instance: App
-
-        fun getContext(): Context {
-            return instance.applicationContext
-        }
-    }
-
     var darkTheme = false
     private lateinit var settingsInteractor: SettingsInteractor
 
@@ -45,5 +37,13 @@ class App : Application() {
             }
         )
         settingsInteractor.saveTheme(darkThemeEnabled)
+    }
+
+    companion object {
+        private lateinit var instance: App
+
+        fun getContext(): Context {
+            return instance.applicationContext
+        }
     }
 }

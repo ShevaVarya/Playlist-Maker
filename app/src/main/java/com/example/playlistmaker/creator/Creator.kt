@@ -2,6 +2,7 @@ package com.example.playlistmaker.creator
 
 import android.content.Context
 import android.media.MediaPlayer
+import com.example.playlistmaker.App
 import com.example.playlistmaker.player.data.PlayerInteractorImpl
 import com.example.playlistmaker.player.domain.api.PlayerInteractor
 import com.example.playlistmaker.search.data.SharedPreferencesRepositoryImpl
@@ -20,6 +21,9 @@ import com.example.playlistmaker.sharing.domain.api.SharingInteractor
 import com.example.playlistmaker.sharing.domain.implementation.SharingInteractorImpl
 
 object Creator {
+
+    val context: Context = App.getContext()
+
     private fun getTrackRepository(): TrackRepository {
         return TrackRepositoryImpl(RetrofitNetworkClient())
     }
@@ -33,12 +37,8 @@ object Creator {
     }
 
     //
-    fun provideSharingIntersctor(context: Context): SharingInteractor {
-        return SharingInteractorImpl(getExternalNavagator(context))
-    }
-
-    private fun getExternalNavagator(context: Context): ExternalNavigator {
-        return ExternalNavigator(context)
+    fun provideSharingIntersctor(): SharingInteractor {
+        return SharingInteractorImpl(ExternalNavigator(context))
     }
 
     //

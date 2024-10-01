@@ -12,10 +12,6 @@ interface WorkerSharedPreferences {
 
 class WorkerSharedPreferencesImpl() : WorkerSharedPreferences {
 
-    private companion object {
-        val SHARED_PREFERENCES_TRACKS_KEY = "tracks_key"
-    }
-
     private val sharedPreferences =
         App.getContext().getSharedPreferences(SHARED_PREFERENCES_NAME_FILE, MODE_PRIVATE)
 
@@ -31,5 +27,9 @@ class WorkerSharedPreferencesImpl() : WorkerSharedPreferences {
 
     override fun clearSharedPreferences() {
         sharedPreferences.edit().clear().apply()
+    }
+
+    private companion object {
+        val SHARED_PREFERENCES_TRACKS_KEY = "tracks_key"
     }
 }

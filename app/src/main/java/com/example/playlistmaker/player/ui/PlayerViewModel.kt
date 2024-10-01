@@ -1,5 +1,6 @@
 package com.example.playlistmaker.player.ui
 
+import android.media.MediaPlayer
 import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.LiveData
@@ -8,35 +9,24 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
+import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.player.domain.api.PlayerInteractor
 import com.example.playlistmaker.player.domain.models.PlayerState
 
 class PlayerViewModel(
-    private val playerInteractor: PlayerInteractor
+    private val mediaPlayer: MediaPlayer,
+    private val trackUrl: String
 ) : ViewModel() {
 
-    private val initialNumberForPlayer = 0
+    private val playerInteractor = Creator.providePlayerInteractor(mediaPlayer, trackUrl)
 
     private val playerState = MutableLiveData<PlayerState>(PlayerState.STATE_DEFAULT)
-    private val playerPosition = MutableLiveData(initialNumberForPlayer)
+    private val playerPosition = MutableLiveData(INITIAL_NUMBER_FOR_PLAYER)
 
     fun getPlayerState(): LiveData<PlayerState> = playerState
     fun getPlayerPosition(): LiveData<Int> = playerPosition
 
     private val handler = Handler(Looper.getMainLooper())
-
-    companion object {
-
-        private const val DELAY_MS = 500L
-
-        fun getViewModelFactory(
-            playerInteractor: PlayerInteractor
-        ): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                PlayerViewModel(playerInteractor)
-            }
-        }
-    }
 
     init {
         onPreparePlayer()
@@ -63,12 +53,12 @@ class PlayerViewModel(
     }
 
     private fun onPreparePlayer() {
-        playerInteractor.preparePlayer(object : PlayerInteractor.StateConsumer{
+        playerInteractor.preparePlayer(object : PlayerInteractor.StateConsumer {
             override fun consume(playerState: PlayerState) {
                 this@PlayerViewModel.playerState.postValue(playerState)
             }
         })
-        playerPosition.postValue(initialNumberForPlayer)
+        playerPosition.postValue(INITIAL_NUMBER_FOR_PLAYER)
     }
 
     fun playbackControl() {
@@ -106,5 +96,17 @@ class PlayerViewModel(
     override fun onCleared() {
         super.onCleared()
         onReleasePlayer()
+    }
+
+    companion object {
+
+        private const val DELAY_MS = 500L
+        private const val INITIAL_NUMBER_FOR_PLAYER = 0
+
+        fun getViewModelFactory(mediaPlayer: MediaPlayer, trackUrl: String): ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                PlayerViewModel(mediaPlayer, trackUrl)
+            }
+        }
     }
 }

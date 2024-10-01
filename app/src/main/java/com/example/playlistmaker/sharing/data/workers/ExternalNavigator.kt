@@ -11,14 +11,6 @@ import com.example.playlistmaker.sharing.data.workers.intents.SendMessageImpl
 
 class ExternalNavigator(private val context: Context) {
 
-    private companion object {
-        val MAIL = getString(App.getContext(), R.string.mail)
-        val EMAIL_MESSAGE = getString(App.getContext(), R.string.message_to_support)
-        val EMAIL_SUBJECT = getString(App.getContext(), R.string.subject_of_message_to_support)
-        val URL = getString(App.getContext(), R.string.url_to_user_agreement)
-        val MESSAGE = getString(App.getContext(), R.string.url_practicum)
-    }
-
     private val sendEmail = SendEmailImpl()
     private val openBrowser = OpenBrowserImpl()
     private val sendMessage = SendMessageImpl()
@@ -37,5 +29,13 @@ class ExternalNavigator(private val context: Context) {
                 sendMessage.sendMessage(context, MESSAGE)
             }
         }
+    }
+
+    private companion object {
+        val MAIL = getString(App.getContext(), R.string.mail)
+        val EMAIL_MESSAGE = getString(App.getContext(), R.string.message_to_support)
+        val EMAIL_SUBJECT = getString(App.getContext(), R.string.subject_of_message_to_support)
+        val URL = getString(App.getContext(), R.string.url_to_user_agreement)
+        val MESSAGE = getString(App.getContext(), R.string.url_practicum)
     }
 }

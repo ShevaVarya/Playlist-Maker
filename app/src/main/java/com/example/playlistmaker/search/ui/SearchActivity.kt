@@ -9,30 +9,19 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.databinding.ActivitySearchBinding
 import com.example.playlistmaker.player.ui.AudioPlayerActivity
-import com.example.playlistmaker.search.domain.api.SearchInteractor
 import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.search.ui.models.SearchState
 import com.google.gson.Gson
 
 class SearchActivity : AppCompatActivity() {
 
-    private companion object {
-        const val KEY = "KEY"
-        const val DEFAULT_VALUE = ""
-        const val INTENT_KEY = "TRACK"
-        const val SEARCH_DEBOUNCE_DELAY = 2000L
-        const val CLICK_DEBOUNCE_DELAY = 1000L
-        const val MAX_SIZES_SEARCH_HISTORY = 10
-    }
-
     private var userInput: String = DEFAULT_VALUE
 
-    private lateinit var binding: ActivitySearchBinding
-
-    private lateinit var searchInteractor: SearchInteractor
+    private val binding: ActivitySearchBinding by lazy {
+        ActivitySearchBinding.inflate(layoutInflater)
+    }
 
     private val tracks = ArrayList<Track>()
     private lateinit var searchAdapter: TrackAdapter
@@ -42,18 +31,15 @@ class SearchActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivitySearchBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         binding.iconBack.setOnClickListener {
             finish()
         }
 
-        searchInteractor = Creator.provideSearchInteractor()
-
         viewModel = ViewModelProvider(
             this,
-            SearchViewModel.getViewModelFactory(searchInteractor)
+            SearchViewModel.getViewModelFactory()
         )[SearchViewModel::class.java]
 
         viewModel.getSearchState().observe(this) {
@@ -98,7 +84,7 @@ class SearchActivity : AppCompatActivity() {
                     render(
                         SearchState.Loading
                     )
-                     viewModel.searchDebounce(s.toString())
+                    viewModel.searchDebounce(s.toString())
                 }
             }
 
@@ -254,5 +240,11 @@ class SearchActivity : AppCompatActivity() {
     override fun onStop() {
         super.onStop()
         viewModel.saveInSharedPreferences(searchHistoryAdapter.tracks)
+    }
+
+    private companion object {
+        const val KEY = "KEY"
+        const val DEFAULT_VALUE = ""
+        const val INTENT_KEY = "TRACK"
     }
 }

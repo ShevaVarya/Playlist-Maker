@@ -6,11 +6,12 @@ import com.example.playlistmaker.databinding.ActivityMediaBinding
 
 class MediaActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityMediaBinding
+    private val binding: ActivityMediaBinding by lazy {
+         ActivityMediaBinding.inflate(layoutInflater)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMediaBinding.inflate(layoutInflater)
         setContentView(binding.root)
     }
 }

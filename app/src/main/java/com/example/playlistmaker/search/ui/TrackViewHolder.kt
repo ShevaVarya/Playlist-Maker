@@ -28,6 +28,4 @@ class TrackViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
             .placeholder(R.drawable.placeholder)
             .into(artwork)
     }
-
-
 }

@@ -12,31 +12,16 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.App
 import com.example.playlistmaker.R
+import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.search.domain.api.SearchInteractor
 import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.search.ui.models.SearchState
 
 class SearchViewModel(
-    private val searchInteractor: SearchInteractor,
     private val application: App
 ) : ViewModel() {
 
-    companion object {
-        const val SEARCH_DEBOUNCE_DELAY = 2000L
-        const val CLICK_DEBOUNCE_DELAY = 1000L
-        const val MAX_SIZES_SEARCH_HISTORY = 10
-
-        private val SEARCH_REQUEST_TOKEN = Any()
-
-        fun getViewModelFactory(
-            searchInteractor: SearchInteractor
-        ): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val application = (this[APPLICATION_KEY] as App)
-                SearchViewModel(searchInteractor, application)
-            }
-        }
-    }
+    private val searchInteractor = Creator.provideSearchInteractor()
 
     private val handler = Handler(Looper.getMainLooper())
 
@@ -147,5 +132,20 @@ class SearchViewModel(
 
     override fun onCleared() {
         handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
+    }
+
+    companion object {
+        const val SEARCH_DEBOUNCE_DELAY = 2000L
+        const val CLICK_DEBOUNCE_DELAY = 1000L
+        const val MAX_SIZES_SEARCH_HISTORY = 10
+
+        private val SEARCH_REQUEST_TOKEN = Any()
+
+        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val application = (this[APPLICATION_KEY] as App)
+                SearchViewModel(application)
+            }
+        }
     }
 }
