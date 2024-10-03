@@ -16,7 +16,6 @@ class ExternalNavigator(
     private val sendMessage: SendMessage
 ) {
 
-
     fun makeIntent(intentType: IntentType) {
         when (intentType) {
             IntentType.SEND_EMAIL -> {

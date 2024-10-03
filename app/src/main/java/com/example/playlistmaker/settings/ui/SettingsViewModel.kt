@@ -11,7 +11,6 @@ class SettingsViewModel(
     private val sharingInteractor: SharingInteractor
 ) : AndroidViewModel(application as App) {
 
-
     fun makeIntent(intentType: IntentType) {
         when (intentType) {
             IntentType.OPEN_BROWSER -> {

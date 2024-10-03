@@ -19,7 +19,7 @@ import com.example.playlistmaker.search.ui.models.SearchState
 
 class SearchViewModel(
     private val application: Context,
-    private val searchInteractor: SearchInteractor
+    private val searchInteractor: SearchInteractor,
 ) : ViewModel() {
 
     private val handler = Handler(Looper.getMainLooper())
