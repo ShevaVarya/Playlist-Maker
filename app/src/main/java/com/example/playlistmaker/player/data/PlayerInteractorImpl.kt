@@ -6,7 +6,7 @@ import com.example.playlistmaker.player.domain.models.PlayerState
 
 class PlayerInteractorImpl(
     private val mediaPlayer: MediaPlayer,
-    private val trackUrl: String
+    private val trackUrl: String,
 ) : PlayerInteractor {
     override var playerState: PlayerState = PlayerState.STATE_DEFAULT
 

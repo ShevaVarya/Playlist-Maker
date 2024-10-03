@@ -4,16 +4,18 @@ import android.content.Context
 import androidx.core.content.ContextCompat.getString
 import com.example.playlistmaker.App
 import com.example.playlistmaker.R
-import com.example.playlistmaker.sharing.data.workers.intents.SendEmailImpl
+import com.example.playlistmaker.sharing.data.workers.intents.OpenBrowser
+import com.example.playlistmaker.sharing.data.workers.intents.SendEmail
+import com.example.playlistmaker.sharing.data.workers.intents.SendMessage
 import com.example.playlistmaker.sharing.domain.models.IntentType
-import com.example.playlistmaker.sharing.data.workers.intents.OpenBrowserImpl
-import com.example.playlistmaker.sharing.data.workers.intents.SendMessageImpl
 
-class ExternalNavigator(private val context: Context) {
+class ExternalNavigator(
+    private val context: Context,
+    private val sendEmail: SendEmail,
+    private val openBrowser: OpenBrowser,
+    private val sendMessage: SendMessage
+) {
 
-    private val sendEmail = SendEmailImpl()
-    private val openBrowser = OpenBrowserImpl()
-    private val sendMessage = SendMessageImpl()
 
     fun makeIntent(intentType: IntentType) {
         when (intentType) {

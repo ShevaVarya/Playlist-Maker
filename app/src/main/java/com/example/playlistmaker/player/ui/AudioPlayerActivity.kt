@@ -14,19 +14,16 @@ import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.player.domain.models.PlayerState
 import com.example.playlistmaker.search.domain.models.Track
 import com.google.gson.Gson
+import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.core.parameter.parametersOf
 
 class AudioPlayerActivity : AppCompatActivity() {
 
-    private val viewModel: PlayerViewModel by lazy {
-        ViewModelProvider(
-            this,
-            PlayerViewModel.getViewModelFactory(mediaPlayer, track.previewUrl)
-        )[PlayerViewModel::class.java]
+    private val viewModel by viewModel<PlayerViewModel>() {
+        parametersOf(track.previewUrl)
     }
 
     private lateinit var track: Track
-
-    private var mediaPlayer = MediaPlayer()
 
     private val binding: ActivityAudioPlayerBinding by lazy {
         ActivityAudioPlayerBinding.inflate(layoutInflater)

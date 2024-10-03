@@ -1,8 +1,6 @@
 package com.example.playlistmaker.settings.data.workers
 
-import androidx.appcompat.app.AppCompatActivity.MODE_PRIVATE
-import com.example.playlistmaker.App
-import com.example.playlistmaker.common.Utils.SHARED_PREFERENCES_NAME_FILE
+import android.content.SharedPreferences
 
 interface WorkerSharedPreferences {
     fun saveInSharedPreferences(json: String)
@@ -10,10 +8,9 @@ interface WorkerSharedPreferences {
     fun clearSharedPreferences()
 }
 
-class WorkerSharedPreferencesImpl() : WorkerSharedPreferences {
-
-    private val sharedPreferences =
-        App.getContext().getSharedPreferences(SHARED_PREFERENCES_NAME_FILE, MODE_PRIVATE)
+class WorkerSharedPreferencesImpl(
+    private val sharedPreferences: SharedPreferences
+) : WorkerSharedPreferences {
 
     override fun saveInSharedPreferences(json: String) {
         sharedPreferences.edit()

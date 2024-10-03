@@ -9,16 +9,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.player.domain.api.PlayerInteractor
 import com.example.playlistmaker.player.domain.models.PlayerState
 
 class PlayerViewModel(
-    private val mediaPlayer: MediaPlayer,
-    private val trackUrl: String
+    private val playerInteractor: PlayerInteractor
 ) : ViewModel() {
-
-    private val playerInteractor = Creator.providePlayerInteractor(mediaPlayer, trackUrl)
 
     private val playerState = MutableLiveData<PlayerState>(PlayerState.STATE_DEFAULT)
     private val playerPosition = MutableLiveData(INITIAL_NUMBER_FOR_PLAYER)
@@ -103,10 +99,5 @@ class PlayerViewModel(
         private const val DELAY_MS = 500L
         private const val INITIAL_NUMBER_FOR_PLAYER = 0
 
-        fun getViewModelFactory(mediaPlayer: MediaPlayer, trackUrl: String): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                PlayerViewModel(mediaPlayer, trackUrl)
-            }
-        }
     }
 }
