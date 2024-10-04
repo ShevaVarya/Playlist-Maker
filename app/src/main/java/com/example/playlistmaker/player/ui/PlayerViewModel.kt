@@ -12,7 +12,7 @@ class PlayerViewModel(
     private val playerInteractor: PlayerInteractor
 ) : ViewModel() {
 
-    private val playerState = MutableLiveData<PlayerState>(PlayerState.STATE_DEFAULT)
+    private val playerState = MutableLiveData(PlayerState.STATE_DEFAULT)
     private val playerPosition = MutableLiveData(INITIAL_NUMBER_FOR_PLAYER)
 
     fun getPlayerState(): LiveData<PlayerState> = playerState

@@ -33,7 +33,7 @@ class SearchActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        binding.iconBack.setOnClickListener {
+        binding.toolbar.setOnClickListener {
             finish()
         }
 

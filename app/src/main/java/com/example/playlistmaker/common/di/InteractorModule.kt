@@ -11,7 +11,7 @@ import com.example.playlistmaker.sharing.domain.implementation.SharingInteractor
 import org.koin.dsl.module
 
 val interactorModule = module {
-    single<PlayerInteractor> { (trackUrl: String) ->
+    factory<PlayerInteractor> { (trackUrl: String) ->
         PlayerInteractorImpl(get(), trackUrl)
     }
 

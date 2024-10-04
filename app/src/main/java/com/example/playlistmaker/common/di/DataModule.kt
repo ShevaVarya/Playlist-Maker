@@ -22,7 +22,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 val dataModule = module {
 
-    single<MediaPlayer> {
+    factory<MediaPlayer> {
         MediaPlayer()
     }
 

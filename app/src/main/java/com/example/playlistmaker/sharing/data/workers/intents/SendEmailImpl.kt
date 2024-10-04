@@ -9,7 +9,7 @@ interface SendEmail {
     fun sendEmail(context: Context, mail: String, message: String, subject: String)
 }
 
-class SendEmailImpl() : SendEmail {
+class SendEmailImpl : SendEmail {
 
     override fun sendEmail(context: Context, mail: String, message: String, subject: String) {
         val intent = Intent(Intent.ACTION_SENDTO).apply {

@@ -27,6 +27,6 @@ class WorkerSharedPreferencesImpl(
     }
 
     private companion object {
-        val SHARED_PREFERENCES_TRACKS_KEY = "tracks_key"
+        const val SHARED_PREFERENCES_TRACKS_KEY = "tracks_key"
     }
 }

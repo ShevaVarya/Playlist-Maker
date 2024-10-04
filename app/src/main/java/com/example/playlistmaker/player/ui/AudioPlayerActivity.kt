@@ -17,7 +17,7 @@ import org.koin.core.parameter.parametersOf
 
 class AudioPlayerActivity : AppCompatActivity() {
 
-    private val viewModel by viewModel<PlayerViewModel>() {
+    private val viewModel by viewModel<PlayerViewModel> {
         parametersOf(track.previewUrl)
     }
 
@@ -33,7 +33,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         track = createItemFromJson(intent.getStringExtra("TRACK") ?: "", Track::class.java)
 
-        binding.iconBack.setOnClickListener {
+        binding.toolbar.setOnClickListener {
             finish()
         }
 

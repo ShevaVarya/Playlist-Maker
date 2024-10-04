@@ -17,7 +17,7 @@ class SettingsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        binding.backFromSettings.setOnClickListener {
+        binding.toolbar.setOnClickListener {
             finish()
         }
 
