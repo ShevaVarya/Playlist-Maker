@@ -78,4 +78,11 @@
     <style name="TrackDescriptionTextItems" parent="TrackDescriptionText">
         <item name="android:textColor">@color/white</item>
     </style>
+
+    <style name="TabLayout">
+        <item name="android:background">@color/dark_transparent_20</item>
+        <item name="tabTextColor">@color/white</item>
+        <item name="tabIndicatorColor">@color/white</item>
+        <item name="tabIndicatorFullWidth">false</item>
+    </style>
 </resources>
