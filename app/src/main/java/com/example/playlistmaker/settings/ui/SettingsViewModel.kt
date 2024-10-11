@@ -1,20 +1,15 @@
 package com.example.playlistmaker.settings.ui
 
+import android.content.Context
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.playlistmaker.App
-import com.example.playlistmaker.creator.Creator
 import com.example.playlistmaker.sharing.domain.api.SharingInteractor
 import com.example.playlistmaker.sharing.domain.models.IntentType
 
 class SettingsViewModel(
-    private val application: App
-) : AndroidViewModel(application) {
-
-    private val sharingInteractor = Creator.provideSharingIntersctor()
+    private val application: Context,
+    private val sharingInteractor: SharingInteractor
+) : AndroidViewModel(application as App) {
 
     fun makeIntent(intentType: IntentType) {
         when (intentType) {
@@ -33,19 +28,10 @@ class SettingsViewModel(
     }
 
     fun isChecked(): Boolean {
-        return application.darkTheme
+        return (application as App).darkTheme
     }
 
     fun switchTheme(isChecked: Boolean) {
-        application.switchTheme(isChecked)
-    }
-
-    companion object {
-        fun getViewModelFactory(): ViewModelProvider.Factory = viewModelFactory {
-            initializer {
-                val application = (this[APPLICATION_KEY] as App)
-                SettingsViewModel(application)
-            }
-        }
+        (application as App).switchTheme(isChecked)
     }
 }

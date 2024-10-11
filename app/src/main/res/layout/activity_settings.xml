@@ -6,25 +6,13 @@
     android:orientation="vertical">
 
     <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:contentInsetStart="@null">
+        android:layout_height="56dp"
+        app:navigationIcon="@drawable/ic_back"
+        app:title="@string/settings"
+        app:titleTextAppearance="@style/TitleText">
 
-        <ImageView
-            android:id="@+id/back_from_settings"
-            style="@style/Icon"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:contentDescription="@string/button_back"
-            android:padding="12dp"
-            android:src="@drawable/ic_back" />
-
-        <TextView
-            style="@style/TitleText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:text="@string/settings" />
 
     </androidx.appcompat.widget.Toolbar>
 

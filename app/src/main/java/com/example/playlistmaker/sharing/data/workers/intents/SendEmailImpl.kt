@@ -9,7 +9,7 @@ interface SendEmail {
     fun sendEmail(context: Context, mail: String, message: String, subject: String)
 }
 
-class SendEmailImpl() : SendEmail {
+class SendEmailImpl : SendEmail {
 
     override fun sendEmail(context: Context, mail: String, message: String, subject: String) {
         val intent = Intent(Intent.ACTION_SENDTO).apply {
@@ -17,6 +17,7 @@ class SendEmailImpl() : SendEmail {
             putExtra(Intent.EXTRA_EMAIL, arrayOf(mail))
             putExtra(Intent.EXTRA_SUBJECT, subject)
             putExtra(Intent.EXTRA_TEXT, message)
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
         startActivity(context, intent, null)
     }
