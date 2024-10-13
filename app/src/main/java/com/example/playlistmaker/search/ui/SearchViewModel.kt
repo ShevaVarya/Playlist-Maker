@@ -28,7 +28,7 @@ class SearchViewModel(
         stateLiveData.postValue(state)
     }
 
-    fun searchDebounce(editText: String) {
+    private fun searchDebounce(editText: String) {
         handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
 
         val searchRunnable = Runnable { loadTracks(editText) }
@@ -56,7 +56,7 @@ class SearchViewModel(
     }
 
     fun addTrackToHistory(item: Track): List<Track> {
-        val tracks = getFromSharedPreferences().toMutableList()
+        val tracks = searchInteractor.getFromSharedPreferences().toMutableList()
 
         tracks.remove(item)
 
@@ -65,7 +65,6 @@ class SearchViewModel(
         }
         tracks.add(0, item)
 
-
         saveInSharedPreferences(tracks)
 
         return tracks
@@ -73,14 +72,34 @@ class SearchViewModel(
 
     fun clearSharedPreferences() {
         searchInteractor.clearSharedPreferences()
+        renderState(SearchState.EmptyHistory)
     }
 
-    fun getFromSharedPreferences(): List<Track> {
-        return searchInteractor.getFromSharedPreferences()
+    fun setContentHistory(): List<Track> {
+        val history = searchInteractor.getFromSharedPreferences()
+        renderState(SearchState.ContentHistory(history))
+        return history
     }
 
     fun saveInSharedPreferences(tracks: List<Track>) {
         searchInteractor.saveInSharedPreferences(tracks)
+    }
+
+    fun setSearchDebounce(text: String) {
+        renderState(SearchState.Loading)
+        searchDebounce(text)
+    }
+
+    fun setContentSearch (tracks: List<Track>) {
+        renderState(
+            SearchState.ContentSearch(
+                tracks = tracks
+            )
+        )
+    }
+
+    fun removeCallbacks() {
+        handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
     }
 
     private fun loadTracks(editText: String) {
@@ -113,11 +132,7 @@ class SearchViewModel(
                         }
 
                         else -> {
-                            renderState(
-                                SearchState.ContentSearch(
-                                    tracks = tracks
-                                )
-                            )
+                            setContentSearch(tracks)
                         }
                     }
                 }
@@ -125,6 +140,7 @@ class SearchViewModel(
     }
 
     override fun onCleared() {
+        super.onCleared()
         handler.removeCallbacksAndMessages(SEARCH_REQUEST_TOKEN)
     }
 
