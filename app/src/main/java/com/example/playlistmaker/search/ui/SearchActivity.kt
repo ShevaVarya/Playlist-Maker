@@ -67,19 +67,18 @@ class SearchActivity : AppCompatActivity() {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                binding.iconClearSearch.visibility = if (s.isNullOrEmpty()) {
+                    View.GONE
+                } else {
+                    View.VISIBLE
+                }
                 if (binding.editTextSearch.hasFocus() && s?.isEmpty() == true && !viewModel.isEmptyHistory()) {
-                    render(
-                        SearchState.ContentHistory(
-                            viewModel.getFromSharedPreferences()
-                                .toMutableList() as ArrayList<Track>
-                        )
-                    )
+                    viewModel.setContentHistory()
                 }
                 if (s?.isEmpty() == false) {
-                    render(
-                        SearchState.Loading
-                    )
-                    viewModel.searchDebounce(s.toString())
+                    viewModel.setSearchDebounce(s.toString())
+                } else {
+                    viewModel.removeCallbacks()
                 }
             }
 
@@ -91,30 +90,24 @@ class SearchActivity : AppCompatActivity() {
 
         binding.editTextSearch.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus && binding.editTextSearch.text.isEmpty() && !viewModel.isEmptyHistory()) {
-                render(
-                    SearchState.ContentHistory(
-                        viewModel.getFromSharedPreferences()
-                            .toMutableList() as ArrayList<Track>
-                    )
-                )
+                viewModel.setContentHistory()
             } else {
-                render(SearchState.ContentSearch(tracks))
+                viewModel.setContentSearch(tracks)
             }
         }
 
         binding.reloadButton.setOnClickListener {
-            render(SearchState.Loading)
-            viewModel.searchDebounce(binding.editTextSearch.text.toString())
+            viewModel.setSearchDebounce(binding.editTextSearch.text.toString())
         }
 
         binding.iconClearSearch.setOnClickListener {
             binding.editTextSearch.setText("")
+            searchAdapter.tracks.clear()
+            searchAdapter.notifyDataSetChanged()
         }
 
         binding.clearHistoryButton.setOnClickListener {
-            render(
-                SearchState.EmptyHistory
-            )
+            viewModel.clearSharedPreferences()
         }
     }
 
@@ -171,7 +164,6 @@ class SearchActivity : AppCompatActivity() {
         binding.clearHistoryButton.visibility = View.GONE
         binding.groupForError.visibility = View.GONE
 
-        viewModel.clearSharedPreferences()
         searchHistoryAdapter.tracks.clear()
         searchHistoryAdapter.notifyDataSetChanged()
     }
