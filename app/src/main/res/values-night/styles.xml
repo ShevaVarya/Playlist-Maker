@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <style name="MainActivity" parent="Theme.PlaylistMaker">
-        <item name="android:background">@color/black</item>
-    </style>
-
     <style name="Icon">
         <item name="tint">@color/white</item>
     </style>
