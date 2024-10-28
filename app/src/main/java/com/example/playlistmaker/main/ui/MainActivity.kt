@@ -2,11 +2,17 @@ package com.example.playlistmaker.main.ui
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.commit
+import androidx.fragment.app.replace
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.setupWithNavController
+import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ActivityMainBinding
-import com.example.playlistmaker.media.ui.MediaActivity
-import com.example.playlistmaker.search.ui.SearchActivity
-import com.example.playlistmaker.settings.ui.SettingsActivity
+import com.example.playlistmaker.media.ui.MediaFragment
+import com.example.playlistmaker.search.ui.SearchFragment
+import com.example.playlistmaker.settings.ui.SettingsFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -18,19 +24,22 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        binding.buttonSearch.setOnClickListener {
-            val intent = Intent(this@MainActivity, SearchActivity::class.java)
-            startActivity(intent)
+        val navHostFragment =
+            supportFragmentManager.findFragmentById(R.id.root_fragment_container) as NavHostFragment
+        val navController = navHostFragment.navController
+
+        binding.bottomNavigation.setupWithNavController(navController)
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when(destination.id) {
+                R.id.audioPlayerActivity,  -> {
+                    binding.bottomNavigation.visibility = View.GONE
+                }
+                else -> {
+                    binding.bottomNavigation.visibility = View.VISIBLE
+                }
+            }
         }
 
-        binding.buttonMedia.setOnClickListener {
-            val intent = Intent(this@MainActivity, MediaActivity::class.java)
-            startActivity(intent)
-        }
-
-        binding.buttonSettings.setOnClickListener {
-            val intent = Intent(this@MainActivity, SettingsActivity::class.java)
-            startActivity(intent)
-        }
     }
 }
