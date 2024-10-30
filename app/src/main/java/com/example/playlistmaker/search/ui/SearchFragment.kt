@@ -24,12 +24,23 @@ class SearchFragment : Fragment() {
 
     private var userInput: String = DEFAULT_VALUE
 
-    private val tracks = ArrayList<Track>()
-    private lateinit var searchAdapter: TrackAdapter
-    private lateinit var searchHistoryAdapter: TrackAdapter
+    private val searchAdapter: TrackAdapter by lazy { TrackAdapter(onItemClickListener) }
+    private val searchHistoryAdapter: TrackAdapter by lazy { TrackAdapter(onItemClickListener) }
 
     private val viewModel: SearchViewModel by viewModel<SearchViewModel>()
 
+    private val onItemClickListener = OnItemClickListener { item ->
+        if (viewModel.clickDebounce()) {
+            val list = viewModel.addTrackToHistory(item)
+            searchHistoryAdapter.tracks.clear()
+            searchHistoryAdapter.tracks.addAll(list)
+            searchHistoryAdapter.notifyDataSetChanged()
+            val intent = Intent(requireContext(), AudioPlayerActivity::class.java).apply {
+                putExtra(INTENT_KEY, createJson(item))
+            }
+            startActivity(intent)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,27 +58,9 @@ class SearchFragment : Fragment() {
             render(it)
         }
 
-        val onItemClickListener = OnItemClickListener { item ->
-            if (viewModel.clickDebounce()) {
-                val list = viewModel.addTrackToHistory(item)
-                searchHistoryAdapter.tracks.clear()
-                searchHistoryAdapter.tracks.addAll(list)
-                searchHistoryAdapter.notifyDataSetChanged()
-                val intent = Intent(requireContext(), AudioPlayerActivity::class.java).apply {
-                    putExtra(INTENT_KEY, createJson(item))
-                }
-                startActivity(intent)
-            }
-        }
-
-        searchHistoryAdapter = TrackAdapter(onItemClickListener)
-
-        searchAdapter = TrackAdapter(onItemClickListener)
-
         binding.tracksList.adapter = searchAdapter
         binding.tracksList.layoutManager =
             LinearLayoutManager(requireContext(), LinearLayoutManager.VERTICAL, false)
-
 
         val textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -98,7 +91,7 @@ class SearchFragment : Fragment() {
             if (hasFocus && binding.editTextSearch.text.isEmpty() && !viewModel.isEmptyHistory()) {
                 viewModel.setContentHistory()
             } else {
-                viewModel.setContentSearch(tracks)
+                viewModel.setContentSearch()
             }
         }
 

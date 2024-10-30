@@ -142,6 +142,7 @@
         style="@style/TrackDescriptionTextItems"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+
         app:layout_constraintBottom_toBottomOf="@+id/text_track_time"
         app:layout_constraintEnd_toStartOf="@id/right_guideline16"
         app:layout_constraintTop_toTopOf="@id/text_track_time"
@@ -168,8 +169,11 @@
     <TextView
         android:id="@+id/collection_name"
         style="@style/TrackDescriptionTextItems"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:gravity="right"
+        app:layout_constraintStart_toEndOf="@id/text_track_time"
         app:layout_constraintBottom_toBottomOf="@+id/text_collection_name"
         app:layout_constraintEnd_toStartOf="@id/right_guideline16"
         app:layout_constraintTop_toTopOf="@id/text_collection_name"

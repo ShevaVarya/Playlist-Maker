@@ -21,6 +21,8 @@ class SearchViewModel(
 
     private var isCLickAllowed = true
 
+    private var tracks = emptyList<Track>()
+
     private val stateLiveData = MutableLiveData<SearchState>()
     fun getSearchState(): LiveData<SearchState> = stateLiveData
 
@@ -90,7 +92,7 @@ class SearchViewModel(
         searchDebounce(text)
     }
 
-    fun setContentSearch (tracks: List<Track>) {
+    fun setContentSearch () {
         renderState(
             SearchState.ContentSearch(
                 tracks = tracks
@@ -107,10 +109,10 @@ class SearchViewModel(
             editText,
             object : SearchInteractor.TrackConsumer {
                 override fun consume(foundTracks: List<Track>?, errorMessage: String?) {
-                    val tracks = mutableListOf<Track>()
+                    val tracksList = mutableListOf<Track>()
                     if (foundTracks != null) {
-                        tracks.clear()
-                        tracks.addAll(foundTracks)
+                        tracksList.clear()
+                        tracksList.addAll(foundTracks)
                     }
 
                     when {
@@ -123,7 +125,7 @@ class SearchViewModel(
                             )
                         }
 
-                        tracks.isEmpty() -> {
+                        tracksList.isEmpty() -> {
                             renderState(
                                 SearchState.NotFound(
                                     message = application.getString(R.string.not_found)
@@ -132,7 +134,8 @@ class SearchViewModel(
                         }
 
                         else -> {
-                            setContentSearch(tracks)
+                            tracks = tracksList
+                            setContentSearch()
                         }
                     }
                 }
