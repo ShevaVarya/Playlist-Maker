@@ -6,5 +6,7 @@
         <item name="colorPrimary">@color/white</item>
         <item name="colorSecondary">@color/dark</item>
         <item name="colorPrimaryVariant">@color/white_transparent_25</item>
+        <item name="colorAccent">@color/blue</item>
+        <item name="android:colorBackground">@color/dark</item>
     </style>
 </resources>

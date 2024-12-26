@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class PlaylistsFragment(): Fragment() {
+class PlaylistsFragment() : Fragment() {
 
     private val viewModel by viewModel<PlaylistsViewModel>()
 

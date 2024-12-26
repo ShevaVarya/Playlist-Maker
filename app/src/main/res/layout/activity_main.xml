@@ -1,49 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:paddingHorizontal="@dimen/standard_padding">
+    tools:context=".main.ui.MainActivity">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/root_fragment_container"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:defaultNavHost="true"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:navGraph="@navigation/main_navigation_graph" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/grey"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_navigation" />
+
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:text="@string/title"
-        android:textColor="@color/white"
-        android:textSize="@dimen/title_text_size"
-        style="@style/TitleText"/>
-
-    <Button
-        android:id="@+id/button_search"
-        style="@style/StyleForButton"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="40dp"
-        android:layout_weight="1"
-        android:text="@string/search"
-        app:icon="@drawable/ic_search"
-        />
-
-    <Button
-        android:id="@+id/button_media"
-        style="@style/StyleForButton"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginVertical="@dimen/standard_padding"
-        android:layout_weight="1"
-        android:text="@string/media"
-        app:icon="@drawable/ic_media" />
-
-    <Button
-        android:id="@+id/button_settings"
-        style="@style/StyleForButton"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginBottom="28dp"
-        android:layout_weight="1"
-        android:text="@string/settings"
-        app:icon="@drawable/ic_settings" />
-
-</LinearLayout>
+        style="@style/BottomNavigationView"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:menu="@menu/navigation_items"/>
+</androidx.constraintlayout.widget.ConstraintLayout>

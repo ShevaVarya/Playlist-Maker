@@ -5,13 +5,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".media.ui.MediaActivity">
+    tools:context=".media.ui.MediaFragment">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        app:navigationIcon="@drawable/ic_back"
         app:title="@string/media"
         app:titleTextAppearance="@style/TitleText">
 
@@ -22,14 +21,12 @@
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabTextAppearance="@style/GeneralText"
-        app:tabIndicatorFullWidth="false"
-        style="@style/TabLayout"/>
+        style="@style/TabLayout"
+        app:tabTextAppearance="@style/GeneralText" />
 
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
+        android:layout_height="match_parent" />
 
 </LinearLayout>

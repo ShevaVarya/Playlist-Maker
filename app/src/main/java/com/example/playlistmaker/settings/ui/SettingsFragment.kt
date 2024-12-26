@@ -1,25 +1,32 @@
 package com.example.playlistmaker.settings.ui
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
-import com.example.playlistmaker.databinding.ActivitySettingsBinding
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import com.example.playlistmaker.databinding.FragmentSettingsBinding
 import com.example.playlistmaker.sharing.domain.models.IntentType
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
-class SettingsActivity : AppCompatActivity() {
+class SettingsFragment : Fragment() {
 
-    private val binding: ActivitySettingsBinding by lazy {
-        ActivitySettingsBinding.inflate(layoutInflater)
-    }
+    private var _binding: FragmentSettingsBinding? = null
+    private val binding get() = _binding!!
+
     private val viewModel: SettingsViewModel by viewModel<SettingsViewModel>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(binding.root)
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        binding.toolbar.setOnClickListener {
-            finish()
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         with(binding) {
             switchNightMode.isChecked = viewModel.isChecked()
@@ -41,5 +48,10 @@ class SettingsActivity : AppCompatActivity() {
 
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
