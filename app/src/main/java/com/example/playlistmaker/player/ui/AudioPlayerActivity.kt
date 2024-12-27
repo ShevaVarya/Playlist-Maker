@@ -7,7 +7,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
-import com.example.playlistmaker.common.util.Formatter
+import com.example.playlistmaker.common.utils.Formatter
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.player.domain.models.PlayerState
 import com.example.playlistmaker.search.domain.models.Track
@@ -42,7 +42,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
 
         viewModel.getPlayerPosition().observe(this) { position ->
-            binding.recordTime.text = Formatter.msToMinute(position.toLong())
+            binding.recordTime.text = position
         }
 
         render()
@@ -79,7 +79,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     private fun updateState(playerState: PlayerState) {
         when (playerState) {
             PlayerState.STATE_PAUSED, PlayerState.STATE_PREPARED
-            -> binding.ibPlay.setImageDrawable(
+                -> binding.ibPlay.setImageDrawable(
                 AppCompatResources.getDrawable(
                     this, R.drawable.ic_play_arrow
                 )

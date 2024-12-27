@@ -1,12 +1,15 @@
 package com.example.playlistmaker.player.ui
 
-import android.os.Handler
-import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.common.utils.Formatter
 import com.example.playlistmaker.player.domain.api.PlayerInteractor
 import com.example.playlistmaker.player.domain.models.PlayerState
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class PlayerViewModel(
     private val playerInteractor: PlayerInteractor
@@ -16,32 +19,30 @@ class PlayerViewModel(
     private val playerPosition = MutableLiveData(INITIAL_NUMBER_FOR_PLAYER)
 
     fun getPlayerState(): LiveData<PlayerState> = playerState
-    fun getPlayerPosition(): LiveData<Int> = playerPosition
+    fun getPlayerPosition(): LiveData<String> = playerPosition
 
-    private val handler = Handler(Looper.getMainLooper())
+    private var timerJob: Job? = null
 
     init {
         onPreparePlayer()
     }
 
     private fun startTimer() {
-        handler.post(timerRunnable())
-
-    }
-
-    private fun stopTimer() {
-        handler.removeCallbacks(timerRunnable())
-    }
-
-    private fun timerRunnable(): Runnable {
-        return object : Runnable {
-            override fun run() {
-                if (playerState.value == PlayerState.STATE_PLAYING) {
-                    playerPosition.postValue(playerInteractor.getCurrentPosition())
-                    handler.postDelayed(this, DELAY_MS)
-                }
+        timerJob = viewModelScope.launch {
+            while (playerState.value == PlayerState.STATE_PLAYING) {
+                delay(DELAY_MS)
+                playerPosition.postValue(
+                    Formatter.msToMinute((playerInteractor.getCurrentPosition()).toLong())
+                )
             }
         }
+    }
+
+    private fun pauseTimer() {
+        timerJob?.cancel()
+        playerPosition.postValue(
+            Formatter.msToMinute((playerInteractor.getCurrentPosition()).toLong())
+        )
     }
 
     private fun onPreparePlayer() {
@@ -69,20 +70,19 @@ class PlayerViewModel(
 
     private fun onPausePlayer() {
         playerInteractor.pausePlayer()
-        playerState.postValue(PlayerState.STATE_PAUSED)
-        stopTimer()
+        playerState.value = PlayerState.STATE_PAUSED
+        pauseTimer()
     }
 
     private fun onStartPlayer() {
         playerInteractor.startPlayer()
-        playerState.postValue(PlayerState.STATE_PLAYING)
+        playerState.value = PlayerState.STATE_PLAYING
         startTimer()
     }
 
     fun onReleasePlayer() {
-        playerInteractor.releasePlayer()
         playerState.postValue(PlayerState.STATE_DEFAULT)
-        stopTimer()
+        playerInteractor.releasePlayer()
     }
 
     override fun onCleared() {
@@ -92,8 +92,8 @@ class PlayerViewModel(
 
     companion object {
 
-        private const val DELAY_MS = 500L
-        private const val INITIAL_NUMBER_FOR_PLAYER = 0
+        private const val DELAY_MS = 300L
+        private const val INITIAL_NUMBER_FOR_PLAYER = "00:00"
 
     }
 }

@@ -1,31 +1,33 @@
 package com.example.playlistmaker.search.domain.implementation
 
-import com.example.playlistmaker.common.util.Resource
+import com.example.playlistmaker.common.utils.Resource
 import com.example.playlistmaker.search.domain.api.SearchInteractor
 import com.example.playlistmaker.search.domain.api.SharedPreferencesRepository
 import com.example.playlistmaker.search.domain.api.TrackRepository
 import com.example.playlistmaker.search.domain.models.Track
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class SearchInteractorImpl(
     private val sharedPreferencesRepository: SharedPreferencesRepository,
     private val trackRepository: TrackRepository
 ) : SearchInteractor {
 
-    override fun searchTracks(text: String, consumer: SearchInteractor.TrackConsumer) {
-        val thread = Thread {
-            when(val resource = trackRepository.searchTrack(text)) {
+    override fun searchTracks(text: String): Flow<Pair<List<Track>?, String?>> {
+        return trackRepository.searchTrack(text).map { result ->
+            when (result) {
                 is Resource.Success -> {
-                    consumer.consume(resource.data, null)
+                    Pair(result.data, null)
                 }
+
                 is Resource.Error -> {
-                    consumer.consume(null, resource.message)
+                    Pair(null, result.message)
                 }
             }
         }
-        thread.start()
     }
 
-    override fun saveInSharedPreferences(tracks: List<Track>){
+    override fun saveInSharedPreferences(tracks: List<Track>) {
         sharedPreferencesRepository.saveInSharedPreferences(tracks)
     }
 
