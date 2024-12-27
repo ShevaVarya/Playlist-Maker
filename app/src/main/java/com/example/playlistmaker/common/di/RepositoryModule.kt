@@ -6,11 +6,12 @@ import com.example.playlistmaker.search.domain.api.SharedPreferencesRepository
 import com.example.playlistmaker.search.domain.api.TrackRepository
 import com.example.playlistmaker.settings.data.SettingsRepositoryImpl
 import com.example.playlistmaker.settings.domain.api.SettingsRepository
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
 val repositoryModule = module {
     single<TrackRepository> {
-        TrackRepositoryImpl(get())
+        TrackRepositoryImpl(get(), androidContext())
     }
 
     single<SettingsRepository> {

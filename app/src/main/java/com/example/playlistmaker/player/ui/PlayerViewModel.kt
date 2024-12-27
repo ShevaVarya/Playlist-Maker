@@ -28,6 +28,7 @@ class PlayerViewModel(
     }
 
     private fun startTimer() {
+        timerJob?.cancel()
         timerJob = viewModelScope.launch {
             while (playerState.value == PlayerState.STATE_PLAYING) {
                 delay(DELAY_MS)
@@ -48,6 +49,7 @@ class PlayerViewModel(
     private fun onPreparePlayer() {
         playerInteractor.preparePlayer(object : PlayerInteractor.StateConsumer {
             override fun consume(playerState: PlayerState) {
+                timerJob?.cancel()
                 this@PlayerViewModel.playerState.postValue(playerState)
             }
         })
@@ -70,8 +72,8 @@ class PlayerViewModel(
 
     private fun onPausePlayer() {
         playerInteractor.pausePlayer()
-        playerState.value = PlayerState.STATE_PAUSED
         pauseTimer()
+        playerState.value = PlayerState.STATE_PAUSED
     }
 
     private fun onStartPlayer() {
