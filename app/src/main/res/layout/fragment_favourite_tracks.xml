@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".media.ui.FavouriteTracksFragment">
+    tools:context=".media.ui.favourite.FavouriteTracksFragment">
 
     <LinearLayout
         android:id="@+id/group_for_error"
@@ -36,6 +36,18 @@
             android:text="@string/empty_media" />
 
     </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/tracks_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/standard_padding"
+        android:layout_weight="1"
+        tools:listitem="@layout/track_item"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

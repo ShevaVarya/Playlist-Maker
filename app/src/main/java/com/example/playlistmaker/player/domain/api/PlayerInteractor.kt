@@ -1,6 +1,7 @@
 package com.example.playlistmaker.player.domain.api
 
 import com.example.playlistmaker.player.domain.models.PlayerState
+import com.example.playlistmaker.search.domain.models.Track
 
 interface PlayerInteractor {
 
@@ -14,4 +15,5 @@ interface PlayerInteractor {
     fun releasePlayer()
     fun getCurrentPosition(): Int
 
+    fun updateFavourite(track: Track): Track
 }

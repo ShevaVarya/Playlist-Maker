@@ -27,12 +27,16 @@ class SearchInteractorImpl(
         }
     }
 
+    override fun addTrackToSharedPreferences(item: Track): List<Track> {
+        return sharedPreferencesRepository.addTrackToSharedPreferences(item)
+    }
+
     override fun saveInSharedPreferences(tracks: List<Track>) {
         sharedPreferencesRepository.saveInSharedPreferences(tracks)
     }
 
     override fun getFromSharedPreferences(): List<Track> {
-        return sharedPreferencesRepository.gerFromSharedPreferences()
+        return sharedPreferencesRepository.getFromSharedPreferences()
     }
 
     override fun clearSharedPreferences() {

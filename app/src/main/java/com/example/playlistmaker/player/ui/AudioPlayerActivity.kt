@@ -32,6 +32,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         track = createItemFromJson(intent.getStringExtra("TRACK") ?: "", Track::class.java)
+        track = viewModel.updateFavourite(track)
 
         binding.toolbar.setOnClickListener {
             finish()
@@ -45,10 +46,22 @@ class AudioPlayerActivity : AppCompatActivity() {
             binding.recordTime.text = position
         }
 
+        viewModel.getFavouriteValue().observe(this) { isFavourite ->
+            if (isFavourite == true)
+                binding.ibAddToFavorite.setImageResource(R.drawable.ic_favourite_filled)
+            else if (isFavourite == false)
+                binding.ibAddToFavorite.setImageResource(R.drawable.ic_favourite)
+            track.isFavourite = isFavourite ?: track.isFavourite
+        }
+
         render()
 
         binding.ibPlay.setOnClickListener {
             viewModel.playbackControl()
+        }
+
+        binding.ibAddToFavorite.setOnClickListener {
+            viewModel.onFavoriteClicked(track)
         }
     }
 
@@ -73,6 +86,12 @@ class AudioPlayerActivity : AppCompatActivity() {
             binding.year.text = Formatter.getYear(releaseDate)
             binding.genre.text = primaryGenreName
             binding.country.text = country
+
+            binding.ibAddToFavorite.setImageResource(
+                if (isFavourite) R.drawable.ic_favourite_filled
+                else R.drawable.ic_favourite
+            )
+
         }
     }
 

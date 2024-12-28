@@ -1,4 +1,4 @@
-package com.example.playlistmaker.settings.data.workers
+package com.example.playlistmaker.common.utils
 
 import android.content.SharedPreferences
 

@@ -56,17 +56,7 @@ class SearchViewModel(
     }
 
     fun addTrackToHistory(item: Track): List<Track> {
-        val tracks = searchInteractor.getFromSharedPreferences().toMutableList()
-
-        tracks.remove(item)
-
-        if (tracks.size == MAX_SIZES_SEARCH_HISTORY) {
-            tracks.removeAt(tracks.size - 1)
-        }
-        tracks.add(0, item)
-
-        saveInSharedPreferences(tracks)
-
+        tracks = searchInteractor.addTrackToSharedPreferences(item)
         return tracks
     }
 
@@ -79,10 +69,6 @@ class SearchViewModel(
         val history = searchInteractor.getFromSharedPreferences()
         renderState(SearchState.ContentHistory(history))
         return history
-    }
-
-    fun saveInSharedPreferences(tracks: List<Track>) {
-        searchInteractor.saveInSharedPreferences(tracks)
     }
 
     fun setSearchDebounce(text: String) {
@@ -151,7 +137,6 @@ class SearchViewModel(
     companion object {
         const val SEARCH_DEBOUNCE_DELAY = 2000L
         const val CLICK_DEBOUNCE_DELAY = 1000L
-        const val MAX_SIZES_SEARCH_HISTORY = 10
 
         private val SEARCH_REQUEST_TOKEN = Any()
     }
