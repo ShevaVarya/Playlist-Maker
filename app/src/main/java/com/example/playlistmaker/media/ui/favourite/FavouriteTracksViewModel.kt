@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.common.utils.debounce
 import com.example.playlistmaker.media.domain.api.FavouriteTrackInteractor
 import com.example.playlistmaker.media.ui.favourite.models.FavouriteState
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class FavouriteTracksViewModel(
@@ -36,13 +36,10 @@ class FavouriteTracksViewModel(
 
     fun clickDebounce(): Boolean {
         val current = isCLickAllowed
-        if (isCLickAllowed) {
+        debounce<Boolean>(CLICK_DEBOUNCE_DELAY, viewModelScope, false) {
             isCLickAllowed = false
-            viewModelScope.launch {
-                delay(CLICK_DEBOUNCE_DELAY)
-                isCLickAllowed = true
-            }
         }
+        isCLickAllowed = true
         return current
     }
 

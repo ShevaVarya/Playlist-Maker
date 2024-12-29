@@ -19,9 +19,7 @@ class FavouriteTracksRepositoryImpl(
     }
 
     override suspend fun deleteTrackFromFavourite(track: Track) {
-        appDatabase.trackDao().deleteTrack(
-            trackDbConverter.map(track)
-        )
+        appDatabase.trackDao().deleteTrack(trackId = track.trackId)
     }
 
     override fun getFavouriteTracks(): Flow<List<Track>> = flow {

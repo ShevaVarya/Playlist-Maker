@@ -12,7 +12,6 @@ import com.example.playlistmaker.common.utils.debounce
 import com.example.playlistmaker.search.domain.api.SearchInteractor
 import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.search.ui.models.SearchState
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
@@ -40,13 +39,10 @@ class SearchViewModel(
 
     fun clickDebounce(): Boolean {
         val current = isCLickAllowed
-        if (isCLickAllowed) {
+        debounce<Boolean>(CLICK_DEBOUNCE_DELAY, viewModelScope, false) {
             isCLickAllowed = false
-            viewModelScope.launch {
-                delay(CLICK_DEBOUNCE_DELAY)
-                isCLickAllowed = true
-            }
         }
+        isCLickAllowed = true
         return current
     }
 
