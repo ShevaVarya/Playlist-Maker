@@ -1,5 +1,6 @@
 package com.example.playlistmaker.search.data
 
+import com.example.playlistmaker.common.utils.GsonConverter
 import com.example.playlistmaker.common.utils.Utils.MAX_SIZES_SEARCH_HISTORY
 import com.example.playlistmaker.common.utils.WorkerSharedPreferences
 import com.example.playlistmaker.search.domain.api.SharedPreferencesRepository
@@ -11,11 +12,14 @@ class SharedPreferencesRepositoryImpl(
     private val workerSharedPreferences: WorkerSharedPreferences,
 ) : SharedPreferencesRepository {
     override fun saveInSharedPreferences(tracks: List<Track>) {
-        workerSharedPreferences.saveInSharedPreferences(createJsonFromTracks(tracks))
+        val track = GsonConverter.createJsonFromList(tracks)
+        workerSharedPreferences.saveInSharedPreferences(track)
     }
 
     override fun getFromSharedPreferences(): List<Track> {
-        val tracks = createTracksFromJson(workerSharedPreferences.gerFromSharedPreferences())
+        val itemType = object : TypeToken<List<Track>>() {}.type
+        val tracks =
+        GsonConverter.createListFromJson<Track>(workerSharedPreferences.gerFromSharedPreferences(), itemType)
         return tracks
     }
 
@@ -36,18 +40,5 @@ class SharedPreferencesRepositoryImpl(
         saveInSharedPreferences(tracks)
 
         return tracks
-    }
-
-    override fun createJsonFromTracks(tracks: List<Track>): String {
-        return Gson().toJson(tracks)
-    }
-
-    override fun createTracksFromJson(json: String?): List<Track> {
-        if (json != null) {
-            val itemType = object : TypeToken<ArrayList<Track>>() {}.type
-            return Gson().fromJson(json, itemType)
-        } else {
-            return emptyList()
-        }
     }
 }

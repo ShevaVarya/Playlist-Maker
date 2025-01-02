@@ -56,6 +56,10 @@
         <item name="android:textFontWeight">400</item>
         <item name="drawableTint">@color/black</item>
     </style>
+    <style name="EditTextPlaylist" parent="EditText">
+        <item name="android:textColorHint">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
 
     <style name="GreyText11" parent="GeneralText">
         <item name="android:textSize">11sp</item>
@@ -89,5 +93,12 @@
         <item name="android:textSize">12sp</item>
         <item name="android:textFontWeight">400</item>
         <item name="android:background">@color/dark</item>
+    </style>
+
+    <style name="new_playlist_text" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="hintTextColor">@color/blue</item>
+        <item name="android:textColorHint">@color/white</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="boxStrokeColor">@drawable/selector_edit_text</item>
     </style>
 </resources>
