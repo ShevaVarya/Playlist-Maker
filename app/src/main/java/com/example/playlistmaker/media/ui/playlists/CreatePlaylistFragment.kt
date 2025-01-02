@@ -11,8 +11,11 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
 import com.example.playlistmaker.databinding.FragmentCreatePlaylistBinding
+import com.example.playlistmaker.media.domain.models.Playlist
+import com.example.playlistmaker.media.ui.models.CreatePlaylistState
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
 import java.io.FileOutputStream
@@ -23,6 +26,8 @@ class CreatePlaylistFragment() : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel by viewModel<CreatePlaylistViewModel>()
+
+    private var uriImage = Uri.EMPTY
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -40,38 +45,29 @@ class CreatePlaylistFragment() : Fragment() {
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
                 if (uri != null) {
                     binding.image.setImageURI(uri)
-                    saveImageToPrivateStorage(uri)
+                    //uriImage = saveImageToPrivateStorage(uri)
                 } else {
                     Toast.makeText(requireContext(), "Изображение не выбрано", Toast.LENGTH_SHORT)
                         .show()
                 }
+                uriImage = uri
             }
 
         binding.image.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
-    }
 
-    private fun saveImageToPrivateStorage(uri: Uri): String {
-        val filePath = File(
-            requireActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES),
-            "playlist_maker"
-        )
-        if (!filePath.exists()) {
-            filePath.mkdirs()
+
+        binding.buttonCreate.setOnClickListener {
+            viewModel.createPlaylist(
+                binding.editTextName.text.toString(),
+                binding.editTextDescriptionName.text.toString(),
+                uriImage,
+                binding.image.drawable.toBitmap()
+            )
         }
-        //создаём экземпляр класса File, который указывает на файл внутри каталога
-        val file = File(filePath, "cover.jpg")
-        // создаём входящий поток байтов из выбранной картинки
-        val inputStream = requireActivity().contentResolver.openInputStream(uri)
-        // создаём исходящий поток байтов в созданный выше файл
-        val outputStream = FileOutputStream(file)
-        // записываем картинку с помощью BitmapFactory
-        BitmapFactory
-            .decodeStream(inputStream)
-            .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
-        return file.path
+
     }
 
     override fun onDestroyView() {

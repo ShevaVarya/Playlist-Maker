@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.databinding.FragmentFavouriteTracksBinding
-import com.example.playlistmaker.media.ui.favourite.models.FavouriteState
+import com.example.playlistmaker.media.ui.models.FavouriteState
 import com.example.playlistmaker.player.ui.AudioPlayerActivity
 import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.search.ui.OnItemClickListener
@@ -46,7 +46,7 @@ class FavouriteTracksFragment() : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getMediaState().observe(viewLifecycleOwner) {
+        viewModel.getFavouriteState().observe(viewLifecycleOwner) {
             render(it)
         }
 

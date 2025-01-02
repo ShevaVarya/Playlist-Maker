@@ -8,7 +8,7 @@ data class PlaylistEntity (
     @PrimaryKey(autoGenerate = true) val id: Int = 0, //ID в базе данных
     val playlistName: String,
     val playlistDescription: String,
-    val imagePath: String,
+    val imagePath: String?,
     val listTracks: String = "",
     val countTrack: Int,
 )
