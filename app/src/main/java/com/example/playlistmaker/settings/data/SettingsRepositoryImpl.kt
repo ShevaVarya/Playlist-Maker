@@ -2,7 +2,7 @@ package com.example.playlistmaker.settings.data
 
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.example.playlistmaker.common.Utils.SHARED_PREFERENCES_KEY_THEME
+import com.example.playlistmaker.common.utils.Utils.SHARED_PREFERENCES_KEY_THEME
 import com.example.playlistmaker.settings.domain.api.SettingsRepository
 
 

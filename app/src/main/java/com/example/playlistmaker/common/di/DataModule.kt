@@ -2,12 +2,15 @@ package com.example.playlistmaker.common.di
 
 import android.content.Context.MODE_PRIVATE
 import android.media.MediaPlayer
-import com.example.playlistmaker.common.Utils.SHARED_PREFERENCES_NAME_FILE
+import androidx.room.Room
+import com.example.playlistmaker.common.utils.Utils.SHARED_PREFERENCES_NAME_FILE
+import com.example.playlistmaker.common.utils.WorkerSharedPreferences
+import com.example.playlistmaker.common.utils.WorkerSharedPreferencesImpl
+import com.example.playlistmaker.media.data.db.AppDatabase
+import com.example.playlistmaker.media.data.db.converters.TrackDbConverter
 import com.example.playlistmaker.search.data.NetworkClient
 import com.example.playlistmaker.search.data.network.ITunesApi
 import com.example.playlistmaker.search.data.network.RetrofitNetworkClient
-import com.example.playlistmaker.settings.data.workers.WorkerSharedPreferences
-import com.example.playlistmaker.settings.data.workers.WorkerSharedPreferencesImpl
 import com.example.playlistmaker.sharing.data.workers.ExternalNavigator
 import com.example.playlistmaker.sharing.data.workers.intents.OpenBrowser
 import com.example.playlistmaker.sharing.data.workers.intents.OpenBrowserImpl
@@ -60,5 +63,14 @@ val dataModule = module {
 
     single {
         ExternalNavigator(androidContext(), get(), get(), get())
+    }
+
+    single {
+        Room.databaseBuilder(androidContext(), AppDatabase::class.java, "database.db")
+            .build()
+    }
+
+    factory {
+        TrackDbConverter()
     }
 }

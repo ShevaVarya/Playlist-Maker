@@ -12,7 +12,6 @@ import com.example.playlistmaker.common.utils.debounce
 import com.example.playlistmaker.search.domain.api.SearchInteractor
 import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.search.ui.models.SearchState
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class SearchViewModel(
@@ -40,13 +39,10 @@ class SearchViewModel(
 
     fun clickDebounce(): Boolean {
         val current = isCLickAllowed
-        if (isCLickAllowed) {
+        debounce<Boolean>(CLICK_DEBOUNCE_DELAY, viewModelScope, false) {
             isCLickAllowed = false
-            viewModelScope.launch {
-                delay(CLICK_DEBOUNCE_DELAY)
-                isCLickAllowed = true
-            }
         }
+        isCLickAllowed = true
         return current
     }
 
@@ -56,17 +52,7 @@ class SearchViewModel(
     }
 
     fun addTrackToHistory(item: Track): List<Track> {
-        val tracks = searchInteractor.getFromSharedPreferences().toMutableList()
-
-        tracks.remove(item)
-
-        if (tracks.size == MAX_SIZES_SEARCH_HISTORY) {
-            tracks.removeAt(tracks.size - 1)
-        }
-        tracks.add(0, item)
-
-        saveInSharedPreferences(tracks)
-
+        tracks = searchInteractor.addTrackToSharedPreferences(item)
         return tracks
     }
 
@@ -79,10 +65,6 @@ class SearchViewModel(
         val history = searchInteractor.getFromSharedPreferences()
         renderState(SearchState.ContentHistory(history))
         return history
-    }
-
-    fun saveInSharedPreferences(tracks: List<Track>) {
-        searchInteractor.saveInSharedPreferences(tracks)
     }
 
     fun setSearchDebounce(text: String) {
@@ -151,7 +133,6 @@ class SearchViewModel(
     companion object {
         const val SEARCH_DEBOUNCE_DELAY = 2000L
         const val CLICK_DEBOUNCE_DELAY = 1000L
-        const val MAX_SIZES_SEARCH_HISTORY = 10
 
         private val SEARCH_REQUEST_TOKEN = Any()
     }

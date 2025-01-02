@@ -1,5 +1,7 @@
 package com.example.playlistmaker.common.di
 
+import com.example.playlistmaker.media.domain.api.FavouriteTrackInteractor
+import com.example.playlistmaker.media.domain.implementation.FavouriteTrackInteractorImpl
 import com.example.playlistmaker.player.data.PlayerInteractorImpl
 import com.example.playlistmaker.player.domain.api.PlayerInteractor
 import com.example.playlistmaker.search.domain.api.SearchInteractor
@@ -12,7 +14,7 @@ import org.koin.dsl.module
 
 val interactorModule = module {
     factory<PlayerInteractor> { (trackUrl: String) ->
-        PlayerInteractorImpl(get(), trackUrl)
+        PlayerInteractorImpl(get(), trackUrl, get())
     }
 
     single<SearchInteractor> {
@@ -25,5 +27,9 @@ val interactorModule = module {
 
     single<SharingInteractor> {
         SharingInteractorImpl(get())
+    }
+
+    factory<FavouriteTrackInteractor> {
+        FavouriteTrackInteractorImpl(get())
     }
 }

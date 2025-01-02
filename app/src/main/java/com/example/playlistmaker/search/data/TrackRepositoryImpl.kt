@@ -4,6 +4,7 @@ import android.content.Context
 import com.example.playlistmaker.R
 import com.example.playlistmaker.common.utils.Formatter
 import com.example.playlistmaker.common.utils.Resource
+import com.example.playlistmaker.media.data.db.AppDatabase
 import com.example.playlistmaker.search.data.dto.TrackSearchRequest
 import com.example.playlistmaker.search.data.dto.TrackSearchResponse
 import com.example.playlistmaker.search.domain.api.TrackRepository
@@ -13,7 +14,8 @@ import kotlinx.coroutines.flow.flow
 
 class TrackRepositoryImpl(
     private val networkClient: NetworkClient,
-    private val application: Context
+    private val application: Context,
+    private val appDatabase: AppDatabase
 ) : TrackRepository {
     override fun searchTrack(text: String): Flow<Resource<List<Track>>> = flow {
         val response = networkClient.makeRequest(TrackSearchRequest(text))
@@ -21,6 +23,7 @@ class TrackRepositoryImpl(
         when (response.resultCode) {
             200 -> {
                 with(response as TrackSearchResponse) {
+                    val trackIds = appDatabase.trackDao().getAllId()
                     val data = results.map {
                         Track(
                             it.trackId,
@@ -34,6 +37,11 @@ class TrackRepositoryImpl(
                             it.country,
                             it.previewUrl
                         )
+                    }
+                    data.forEach {
+                        if (trackIds.contains(it.trackId)) {
+                            it.isFavourite = true
+                        }
                     }
                     emit(Resource.Success(data))
                 }
