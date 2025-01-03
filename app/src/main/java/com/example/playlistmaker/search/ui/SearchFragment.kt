@@ -29,7 +29,7 @@ class SearchFragment : Fragment() {
 
     private val viewModel: SearchViewModel by viewModel<SearchViewModel>()
 
-    private val onItemClickListener = OnItemClickListener { item ->
+    private val onItemClickListener = OnItemClickListener<Track> { item ->
         if (viewModel.clickDebounce()) {
             val list = viewModel.addTrackToHistory(item)
             searchHistoryAdapter.tracks.clear()

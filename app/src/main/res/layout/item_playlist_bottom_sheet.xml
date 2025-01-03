@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/bottom_sheet_item"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:id="@+id/bottom_sheet_playlist_image"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginVertical="@dimen/margin_8"
+        android:layout_marginStart="13dp"
+        android:src="@drawable/placeholder"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/bottom_sheet_playlist_name"
+        style="@style/GeneralText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="@dimen/margin_8"
+        android:maxWidth="250dp"
+        app:chainUseRtl="false"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_sheet_playlist_count"
+        app:layout_constraintStart_toEndOf="@id/bottom_sheet_playlist_image"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Название плейлиста" />
+
+    <TextView
+        android:id="@+id/bottom_sheet_playlist_count"
+        style="@style/GreyText11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:maxWidth="200dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/bottom_sheet_playlist_name"
+        app:layout_constraintTop_toBottomOf="@id/bottom_sheet_playlist_name"
+        tools:text="98 треков" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

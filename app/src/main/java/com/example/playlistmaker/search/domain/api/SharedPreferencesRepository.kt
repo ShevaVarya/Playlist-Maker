@@ -7,6 +7,4 @@ interface SharedPreferencesRepository {
     fun getFromSharedPreferences(): List<Track>
     fun clearSharedPreferences()
     fun addTrackToSharedPreferences(item: Track): List<Track>
-    fun createJsonFromTracks(tracks: List<Track>): String
-    fun createTracksFromJson(json: String?): List<Track>
 }

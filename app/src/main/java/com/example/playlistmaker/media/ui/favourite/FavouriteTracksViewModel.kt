@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.common.utils.debounce
 import com.example.playlistmaker.media.domain.api.FavouriteTrackInteractor
-import com.example.playlistmaker.media.ui.favourite.models.FavouriteState
+import com.example.playlistmaker.media.ui.models.FavouriteState
 import kotlinx.coroutines.launch
 
 class FavouriteTracksViewModel(
@@ -14,7 +14,7 @@ class FavouriteTracksViewModel(
 ) : ViewModel() {
 
     private val favouriteState = MutableLiveData<FavouriteState>()
-    fun getMediaState(): LiveData<FavouriteState> = favouriteState
+    fun getFavouriteState(): LiveData<FavouriteState> = favouriteState
 
     private var isCLickAllowed = true
 
