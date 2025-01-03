@@ -1,8 +1,8 @@
 package com.example.playlistmaker.common.di
 
-import com.example.playlistmaker.media.data.CreatePlaylistRepositoryImpl
+import com.example.playlistmaker.media.data.PlaylistRepositoryImpl
 import com.example.playlistmaker.media.data.FavouriteTracksRepositoryImpl
-import com.example.playlistmaker.media.domain.api.CreatePlaylistRepository
+import com.example.playlistmaker.media.domain.api.PlaylistRepository
 import com.example.playlistmaker.media.domain.api.FavouriteTracksRepository
 import com.example.playlistmaker.search.data.SharedPreferencesRepositoryImpl
 import com.example.playlistmaker.search.data.TrackRepositoryImpl
@@ -30,8 +30,8 @@ val repositoryModule = module {
         FavouriteTracksRepositoryImpl(get(), get())
     }
 
-    single<CreatePlaylistRepository> {
-        CreatePlaylistRepositoryImpl(get(), get())
+    single<PlaylistRepository> {
+        PlaylistRepositoryImpl(get(), get())
     }
 
 }

@@ -3,15 +3,15 @@ package com.example.playlistmaker.media.data
 import com.example.playlistmaker.media.data.db.AppDatabase
 import com.example.playlistmaker.media.data.db.converters.PlaylistDbConverter
 import com.example.playlistmaker.media.data.db.entity.PlaylistEntity
-import com.example.playlistmaker.media.domain.api.CreatePlaylistRepository
+import com.example.playlistmaker.media.domain.api.PlaylistRepository
 import com.example.playlistmaker.media.domain.models.Playlist
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
-class CreatePlaylistRepositoryImpl(
+class PlaylistRepositoryImpl(
     private val appDatabase: AppDatabase,
     private val playlistDbConverter: PlaylistDbConverter
-) : CreatePlaylistRepository {
+) : PlaylistRepository {
     override suspend fun createPlaylist(
         playlistName: String,
         playlistDescription: String,

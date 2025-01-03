@@ -11,10 +11,11 @@ class GsonConverter {
         }
 
         fun <T> createListFromJson(json: String?, itemType: Type): List<T> {
-            if (json != null) {
-                return Gson().fromJson(json, itemType)
-            } else {
+            if (json.isNullOrEmpty()) {
                 return emptyList()
+            } else {
+                return Gson().fromJson(json, itemType)
+
             }
         }
     }

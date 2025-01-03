@@ -1,26 +1,19 @@
 package com.example.playlistmaker.media.ui.playlists
 
-import android.app.Application
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
-import android.os.Environment
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.common.utils.getCacheImagePath
-import com.example.playlistmaker.media.domain.api.CreatePlaylistInteractor
-import com.example.playlistmaker.media.domain.models.Playlist
-import com.example.playlistmaker.media.ui.models.CreatePlaylistState
+import com.example.playlistmaker.media.domain.api.PlaylistInteractor
 import kotlinx.coroutines.launch
 import java.io.File
 import java.io.FileOutputStream
 import java.util.UUID
 
 class CreatePlaylistViewModel(
-    private val interactor: CreatePlaylistInteractor,
+    private val interactor: PlaylistInteractor,
     private val application: Context,
 ) : ViewModel() {
 

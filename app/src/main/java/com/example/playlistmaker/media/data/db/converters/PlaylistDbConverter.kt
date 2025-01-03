@@ -26,7 +26,7 @@ class PlaylistDbConverter {
            playlistName = playlistEntity.playlistName,
            playlistDescription = playlistEntity.playlistDescription,
            imagePath = playlistEntity.imagePath,
-           listTracksId = GsonConverter.createListFromJson(playlistEntity.listTracks, type),
+           listTracksId = GsonConverter.createListFromJson<Int>(playlistEntity.listTracks, type),
            countTracks = playlistEntity.countTrack
        )
    }

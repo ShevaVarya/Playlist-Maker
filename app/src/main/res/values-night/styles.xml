@@ -78,6 +78,9 @@
     <style name="TrackDescriptionTextItems" parent="TrackDescriptionText">
         <item name="android:textColor">@color/white</item>
     </style>
+    <style name="PlaylistText" parent="GeneralText">
+        <item name="android:textColor">@color/white</item>
+    </style>
 
     <style name="TabLayout">
         <item name="android:background">@color/dark_transparent_20</item>

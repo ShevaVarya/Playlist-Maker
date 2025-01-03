@@ -69,7 +69,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         Glide.with(this)
             .load(Formatter.getCoverArtwork(track.artworkUrl100))
             .centerCrop()
-            .transform(RoundedCorners(Formatter.dpToPx(2f, this)))
+            .transform(RoundedCorners(Formatter.dpToPx(8f, this)))
             .placeholder(R.drawable.placeholder)
             .into(binding.trackImage)
 

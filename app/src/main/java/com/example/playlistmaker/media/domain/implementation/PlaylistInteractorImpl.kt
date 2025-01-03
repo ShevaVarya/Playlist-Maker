@@ -1,13 +1,13 @@
 package com.example.playlistmaker.media.domain.implementation
 
-import com.example.playlistmaker.media.domain.api.CreatePlaylistInteractor
-import com.example.playlistmaker.media.domain.api.CreatePlaylistRepository
+import com.example.playlistmaker.media.domain.api.PlaylistInteractor
+import com.example.playlistmaker.media.domain.api.PlaylistRepository
 import com.example.playlistmaker.media.domain.models.Playlist
 import kotlinx.coroutines.flow.Flow
 
-class CreatePlaylistInteractorImpl(
-    private val repository: CreatePlaylistRepository
-) : CreatePlaylistInteractor {
+class PlaylistInteractorImpl(
+    private val repository: PlaylistRepository
+) : PlaylistInteractor {
 
     override suspend fun createPlaylist(
         playlistName: String,

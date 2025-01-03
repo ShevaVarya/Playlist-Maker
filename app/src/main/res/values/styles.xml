@@ -91,6 +91,11 @@
     <style name="TrackDescriptionTextItems" parent="TrackDescriptionText">
         <item name="android:textColor">@color/black</item>
     </style>
+    <style name="PlaylistText" parent="GeneralText">
+        <item name="android:textSize">12sp</item>
+        <item name="android:textColor">@color/dark</item>
+        <item name="fontFamily">@font/ys_display_regular</item>
+    </style>
     <style name="TabLayout">
         <item name="android:background">@color/white</item>
         <item name="tabTextColor">@color/black</item>

@@ -3,9 +3,13 @@ package com.example.playlistmaker.media.domain.api
 import com.example.playlistmaker.media.domain.models.Playlist
 import kotlinx.coroutines.flow.Flow
 
-interface CreatePlaylistInteractor {
+interface PlaylistRepository {
 
-    suspend fun createPlaylist(playlistName: String, playlistDescription: String, playlistImage: String?)
+    suspend fun createPlaylist(
+        playlistName: String,
+        playlistDescription: String,
+        playlistImage: String?
+    )
 
     suspend fun deletePlaylist(playlist: Playlist)
 
