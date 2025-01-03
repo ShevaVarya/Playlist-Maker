@@ -14,7 +14,7 @@ import org.koin.dsl.module
 
 val viewModelModule = module {
     viewModel { (trackUrl: String) ->
-        PlayerViewModel(get { parametersOf(trackUrl) }, get())
+        PlayerViewModel(get { parametersOf(trackUrl) }, get(), get())
     }
 
     viewModel {

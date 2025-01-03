@@ -18,5 +18,9 @@ class GsonConverter {
 
             }
         }
+
+        fun <T : Any> createItemFromJson(json: String, type: Class<T>): T {
+            return Gson().fromJson(json, type)
+        }
     }
 }

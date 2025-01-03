@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.common.utils.Formatter
 import com.example.playlistmaker.media.domain.api.FavouriteTrackInteractor
+import com.example.playlistmaker.media.domain.api.PlaylistInteractor
+import com.example.playlistmaker.media.domain.models.Playlist
 import com.example.playlistmaker.player.domain.api.PlayerInteractor
 import com.example.playlistmaker.player.domain.models.PlayerState
 import com.example.playlistmaker.search.domain.models.Track
@@ -16,15 +18,18 @@ import kotlinx.coroutines.launch
 class PlayerViewModel(
     private val playerInteractor: PlayerInteractor,
     private val favouriteTrackInteractor: FavouriteTrackInteractor,
+    private val playlistInteractor: PlaylistInteractor,
 ) : ViewModel() {
 
     private val playerState = MutableLiveData(PlayerState.STATE_DEFAULT)
     private val playerPosition = MutableLiveData(INITIAL_NUMBER_FOR_PLAYER)
     private val isFavourite = MutableLiveData<Boolean>()
+    private val playlistList = MutableLiveData<List<Playlist>>()
 
     fun getPlayerState(): LiveData<PlayerState> = playerState
     fun getPlayerPosition(): LiveData<String> = playerPosition
     fun getFavouriteValue(): LiveData<Boolean?> = isFavourite
+    fun getPlaylistList(): LiveData<List<Playlist>> = playlistList
 
     private var timerJob: Job? = null
 
@@ -46,6 +51,16 @@ class PlayerViewModel(
 
     fun updateFavourite(track: Track): Track {
         return playerInteractor.updateFavourite(track)
+    }
+
+    fun loadPlaylist() {
+        viewModelScope.launch {
+            playlistInteractor.getPlaylists().collect { list ->
+                if (list.isNotEmpty()) {
+                    playlistList.postValue(list)
+                }
+            }
+        }
     }
 
     private fun startTimer() {

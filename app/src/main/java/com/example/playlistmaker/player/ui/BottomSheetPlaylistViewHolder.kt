@@ -1,4 +1,4 @@
-package com.example.playlistmaker.media.ui.playlists
+package com.example.playlistmaker.player.ui
 
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
@@ -10,18 +10,18 @@ import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.common.utils.Formatter
 import com.example.playlistmaker.common.utils.getCacheImagePath
-import com.example.playlistmaker.databinding.ItemPlaylistBinding
+import com.example.playlistmaker.databinding.ItemPlaylistBottomSheetBinding
 import com.example.playlistmaker.media.domain.models.Playlist
 import java.io.File
 import java.util.Locale
 
-class PlaylistViewHolder(
-    val binding: ItemPlaylistBinding
-) : RecyclerView.ViewHolder(binding.root) {
+class BottomSheetPlaylistViewHolder(
+    private val binding: ItemPlaylistBottomSheetBinding
+) :  RecyclerView.ViewHolder(binding.root){
 
     fun bind(model: Playlist) {
-        binding.playlistName.text = model.playlistName
-        binding.playlistCount.text = String.format(Locale.getDefault(), "%d", model.countTracks)
+        binding.bottomSheetPlaylistName.text = model.playlistName
+        binding.bottomSheetPlaylistCount.text = String.format(Locale.getDefault(), "%d", model.countTracks)
 
         val filePath = getCacheImagePath(itemView.context)
         val file = File(filePath, model.imagePath ?: "")
@@ -36,7 +36,7 @@ class PlaylistViewHolder(
                     )
                 )
             )
-            .into(binding.playlistImage)
+            .into(binding.bottomSheetPlaylistImage)
     }
 
 }

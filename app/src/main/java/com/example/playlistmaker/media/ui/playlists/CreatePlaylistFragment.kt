@@ -92,7 +92,7 @@ class CreatePlaylistFragment() : Fragment() {
         binding.buttonCreate.setOnClickListener {
             viewModel.createPlaylist(
                 binding.editTextName.text.toString(),
-                binding.editTextDescriptionName.text.toString(),
+                binding.editTextDescription.text.toString(),
                 uriImage,
                 binding.image.drawable.toBitmap()
             )

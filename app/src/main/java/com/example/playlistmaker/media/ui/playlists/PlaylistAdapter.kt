@@ -18,7 +18,6 @@ class PlaylistAdapter() :
             parent,
             false
         )
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.track_item, parent, false)
         return PlaylistViewHolder(binding)
     }
 

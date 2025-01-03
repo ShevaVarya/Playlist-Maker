@@ -4,14 +4,16 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.common.utils.Formatter
+import com.example.playlistmaker.common.utils.GsonConverter
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.player.domain.models.PlayerState
 import com.example.playlistmaker.search.domain.models.Track
-import com.google.gson.Gson
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
 
@@ -27,16 +29,21 @@ class AudioPlayerActivity : AppCompatActivity() {
         ActivityAudioPlayerBinding.inflate(layoutInflater)
     }
 
+    private val adapter by lazy { BottomSheetPlaylistAdapter() }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        track = createItemFromJson(intent.getStringExtra("TRACK") ?: "", Track::class.java)
+        track = GsonConverter.createItemFromJson(
+            intent.getStringExtra("TRACK") ?: "",
+            Track::class.java
+        )
         track = viewModel.updateFavourite(track)
 
-        binding.toolbar.setOnClickListener {
-            finish()
-        }
+        binding.bottomSheetList.adapter = adapter
+        binding.bottomSheetList.layoutManager =
+            LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
 
         viewModel.getPlayerState().observe(this) { playerState ->
             updateState(playerState)
@@ -54,7 +61,39 @@ class AudioPlayerActivity : AppCompatActivity() {
             track.isFavourite = isFavourite ?: track.isFavourite
         }
 
+        viewModel.getPlaylistList().observe(this) {
+            adapter.playlistList.clear()
+            adapter.playlistList.addAll(it)
+            adapter.notifyDataSetChanged()
+        }
+
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.playlistsBottomSheet).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        bottomSheetBehavior.addBottomSheetCallback(object :
+            BottomSheetBehavior.BottomSheetCallback() {
+            override fun onStateChanged(bottomSheet: View, newState: Int) {
+                when (newState) {
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+                        binding.overlay.visibility = View.GONE
+                    }
+
+                    else -> {
+                        binding.overlay.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+
+        })
+
         render()
+
+        binding.toolbar.setOnClickListener {
+            finish()
+        }
 
         binding.ibPlay.setOnClickListener {
             viewModel.playbackControl()
@@ -62,6 +101,11 @@ class AudioPlayerActivity : AppCompatActivity() {
 
         binding.ibAddToFavorite.setOnClickListener {
             viewModel.onFavoriteClicked(track)
+        }
+
+        binding.ibAddToPlaylist.setOnClickListener {
+            viewModel.loadPlaylist()
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
     }
 
@@ -119,10 +163,6 @@ class AudioPlayerActivity : AppCompatActivity() {
                 binding.recordTime.text = getString(R.string.time_0_00)
             }
         }
-    }
-
-    private fun <T : Any> createItemFromJson(json: String, type: Class<T>): T {
-        return Gson().fromJson(json, type)
     }
 
     override fun onDestroy() {
