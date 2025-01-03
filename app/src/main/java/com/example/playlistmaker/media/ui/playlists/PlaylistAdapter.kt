@@ -3,7 +3,6 @@ package com.example.playlistmaker.media.ui.playlists
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.ItemPlaylistBinding
 import com.example.playlistmaker.media.domain.models.Playlist
 

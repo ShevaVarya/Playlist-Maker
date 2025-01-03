@@ -13,15 +13,14 @@ import com.example.playlistmaker.common.utils.getCacheImagePath
 import com.example.playlistmaker.databinding.ItemPlaylistBottomSheetBinding
 import com.example.playlistmaker.media.domain.models.Playlist
 import java.io.File
-import java.util.Locale
 
 class BottomSheetPlaylistViewHolder(
     private val binding: ItemPlaylistBottomSheetBinding
-) :  RecyclerView.ViewHolder(binding.root){
+) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(model: Playlist) {
         binding.bottomSheetPlaylistName.text = model.playlistName
-        binding.bottomSheetPlaylistCount.text = String.format(Locale.getDefault(), "%d", model.countTracks)
+        binding.bottomSheetPlaylistCount.text = Formatter.formatTracks(model.countTracks)
 
         val filePath = getCacheImagePath(itemView.context)
         val file = File(filePath, model.imagePath ?: "")

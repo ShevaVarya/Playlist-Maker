@@ -25,11 +25,13 @@ class PlayerViewModel(
     private val playerPosition = MutableLiveData(INITIAL_NUMBER_FOR_PLAYER)
     private val isFavourite = MutableLiveData<Boolean>()
     private val playlistList = MutableLiveData<List<Playlist>>()
+    private val addingTrackState = MutableLiveData<Pair<Boolean, Playlist>>()
 
     fun getPlayerState(): LiveData<PlayerState> = playerState
     fun getPlayerPosition(): LiveData<String> = playerPosition
     fun getFavouriteValue(): LiveData<Boolean?> = isFavourite
     fun getPlaylistList(): LiveData<List<Playlist>> = playlistList
+    fun getAddingTrackState(): LiveData<Pair<Boolean, Playlist>> = addingTrackState
 
     private var timerJob: Job? = null
 
@@ -60,6 +62,17 @@ class PlayerViewModel(
                     playlistList.postValue(list)
                 }
             }
+        }
+    }
+
+    fun addTrackToPlaylist(track: Track, playlist: Playlist) {
+        if (playlist.listTracksId.contains(track.trackId)) {
+            addingTrackState.postValue(Pair(false, playlist))
+        } else {
+            viewModelScope.launch {
+                playlistInteractor.addTrackToPlaylist(track, playlist)
+            }
+            addingTrackState.postValue(Pair(true, playlist))
         }
     }
 

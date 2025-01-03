@@ -8,6 +8,7 @@ import com.example.playlistmaker.common.utils.WorkerSharedPreferences
 import com.example.playlistmaker.common.utils.WorkerSharedPreferencesImpl
 import com.example.playlistmaker.media.data.db.AppDatabase
 import com.example.playlistmaker.media.data.db.converters.PlaylistDbConverter
+import com.example.playlistmaker.media.data.db.converters.PlaylistTrackDbConverter
 import com.example.playlistmaker.media.data.db.converters.TrackDbConverter
 import com.example.playlistmaker.search.data.NetworkClient
 import com.example.playlistmaker.search.data.network.ITunesApi
@@ -77,5 +78,9 @@ val dataModule = module {
 
     factory {
         PlaylistDbConverter()
+    }
+
+    factory {
+        PlaylistTrackDbConverter()
     }
 }

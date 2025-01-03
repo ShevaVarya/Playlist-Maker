@@ -13,7 +13,6 @@ import com.example.playlistmaker.common.utils.getCacheImagePath
 import com.example.playlistmaker.databinding.ItemPlaylistBinding
 import com.example.playlistmaker.media.domain.models.Playlist
 import java.io.File
-import java.util.Locale
 
 class PlaylistViewHolder(
     val binding: ItemPlaylistBinding
@@ -21,7 +20,7 @@ class PlaylistViewHolder(
 
     fun bind(model: Playlist) {
         binding.playlistName.text = model.playlistName
-        binding.playlistCount.text = String.format(Locale.getDefault(), "%d", model.countTracks)
+        binding.playlistCount.text = Formatter.formatTracks(model.countTracks)
 
         val filePath = getCacheImagePath(itemView.context)
         val file = File(filePath, model.imagePath ?: "")

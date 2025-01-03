@@ -8,5 +8,5 @@ sealed interface PlaylistState {
 
     data class Content(
         val playlists: List<Playlist>
-    ): PlaylistState
+    ) : PlaylistState
 }

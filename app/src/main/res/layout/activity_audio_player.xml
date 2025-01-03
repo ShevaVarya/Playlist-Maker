@@ -175,7 +175,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="6dp"
-            android:gravity="right"
+            android:gravity="end"
             app:layout_constraintBottom_toBottomOf="@+id/text_collection_name"
             app:layout_constraintEnd_toStartOf="@id/right_guideline16"
             app:layout_constraintStart_toEndOf="@id/text_track_time"
@@ -263,7 +263,7 @@
         android:background="@drawable/bottom_sheet_background"
         android:orientation="vertical"
         app:behavior_hideable="true"
-        app:behavior_peekHeight="240dp"
+        app:behavior_peekHeight="505dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
         <TextView
@@ -276,7 +276,7 @@
             android:textAlignment="center" />
 
         <Button
-            android:id="@+id/new_playlist_button"
+            android:id="@+id/bottom_sheet_new_playlist_button"
             style="@style/StyleForReloadButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -293,5 +293,14 @@
             tools:listitem="@layout/item_playlist_bottom_sheet"/>
 
     </LinearLayout>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/player_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        app:defaultNavHost="true"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"/>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

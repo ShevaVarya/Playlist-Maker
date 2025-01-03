@@ -3,6 +3,7 @@ package com.example.playlistmaker.media.domain.implementation
 import com.example.playlistmaker.media.domain.api.PlaylistInteractor
 import com.example.playlistmaker.media.domain.api.PlaylistRepository
 import com.example.playlistmaker.media.domain.models.Playlist
+import com.example.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.flow.Flow
 
 class PlaylistInteractorImpl(
@@ -27,5 +28,11 @@ class PlaylistInteractorImpl(
 
     override suspend fun updatePlaylist(playlist: Playlist) {
         repository.updatePlaylist(playlist)
+    }
+
+    override suspend fun addTrackToPlaylist(track: Track, playlist: Playlist) {
+        playlist.listTracksId.add(track.trackId)
+        playlist.countTracks++
+        repository.addTrackToPlaylist(track, playlist)
     }
 }

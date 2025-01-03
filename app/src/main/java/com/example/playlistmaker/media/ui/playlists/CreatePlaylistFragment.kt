@@ -1,5 +1,6 @@
 package com.example.playlistmaker.media.ui.playlists
 
+import android.app.AlertDialog
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -8,18 +9,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.bundle.bundleOf
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
+import androidx.fragment.app.setFragmentResult
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
+import com.example.playlistmaker.R
 import com.example.playlistmaker.common.utils.Formatter
 import com.example.playlistmaker.databinding.FragmentCreatePlaylistBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class CreatePlaylistFragment() : Fragment() {
@@ -85,6 +91,16 @@ class CreatePlaylistFragment() : Fragment() {
                 }
             }
 
+        binding.toolbar.setOnClickListener {
+            if (
+                !(binding.editTextName.text.isNullOrEmpty())
+                || !(binding.editTextDescription.text.isNullOrEmpty())
+                || uriImage != Uri.EMPTY
+            ) showDialog()
+            else
+                closeFragment()
+        }
+
         binding.image.setOnClickListener {
             pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
@@ -96,9 +112,55 @@ class CreatePlaylistFragment() : Fragment() {
                 uriImage,
                 binding.image.drawable.toBitmap()
             )
-            findNavController().navigateUp()
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.playlist) + " ${binding.editTextName.text.toString()} "
+                        + getString(R.string.created),
+                Toast.LENGTH_SHORT
+            ).show()
+            closeFragment()
         }
 
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (
+                        !(binding.editTextName.text.isNullOrEmpty())
+                        || !(binding.editTextDescription.text.isNullOrEmpty())
+                        || uriImage != Uri.EMPTY
+                    )
+                        showDialog()
+                }
+            })
+    }
+
+    fun showDialog() {
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle(getString(R.string.finish_creating))
+            .setMessage(getString(R.string.all_data_will_be_deleted)) // Описание диалога
+            .setNeutralButton(getString(R.string.cancel)) { dialog, which ->
+                dialog.cancel()
+            }
+            .setPositiveButton(getString(R.string.finish)) { dialog, which -> // Добавляет кнопку «Да»
+                closeFragment()
+            }
+            .create()
+
+        dialog.show()
+
+        val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+        val neutralButton = dialog.getButton(AlertDialog.BUTTON_NEUTRAL)
+
+        val color = ContextCompat.getColor(requireContext(), R.color.blue)
+
+        positiveButton.setTextColor(color)
+        neutralButton.setTextColor(color)
+    }
+
+    private fun closeFragment() {
+        setFragmentResult("fragment_key", bundleOf("closed" to true))
+        parentFragmentManager.popBackStack()
     }
 
     override fun onDestroyView() {

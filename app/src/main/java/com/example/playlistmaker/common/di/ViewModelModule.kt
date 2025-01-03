@@ -1,7 +1,7 @@
 package com.example.playlistmaker.common.di
 
-import com.example.playlistmaker.media.ui.favourite.FavouriteTracksViewModel
 import com.example.playlistmaker.media.ui.MediaViewModel
+import com.example.playlistmaker.media.ui.favourite.FavouriteTracksViewModel
 import com.example.playlistmaker.media.ui.playlists.CreatePlaylistViewModel
 import com.example.playlistmaker.media.ui.playlists.PlaylistsViewModel
 import com.example.playlistmaker.player.ui.PlayerViewModel

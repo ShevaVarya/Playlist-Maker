@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.media.domain.models.Playlist
@@ -48,7 +47,7 @@ class PlaylistsFragment() : Fragment() {
         }
     }
 
-    private fun render(state: PlaylistState){
+    private fun render(state: PlaylistState) {
         when (state) {
             is PlaylistState.EmptyPlaylists -> showStub()
             is PlaylistState.Content -> showContent(state.playlists)

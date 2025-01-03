@@ -25,7 +25,7 @@ class FavouriteTracksFragment() : Fragment() {
     private var _binding: FragmentFavouriteTracksBinding? = null
     private val binding get() = _binding!!
 
-    private val onItemClickListener = OnItemClickListener { item ->
+    private val onItemClickListener = OnItemClickListener<Track> { item ->
         if (viewModel.clickDebounce()) {
             val intent = Intent(requireContext(), AudioPlayerActivity::class.java).apply {
                 putExtra(INTENT_KEY, createJson(item))

@@ -2,6 +2,7 @@ package com.example.playlistmaker.player.ui
 
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,8 +12,11 @@ import com.example.playlistmaker.R
 import com.example.playlistmaker.common.utils.Formatter
 import com.example.playlistmaker.common.utils.GsonConverter
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
+import com.example.playlistmaker.media.domain.models.Playlist
+import com.example.playlistmaker.media.ui.playlists.CreatePlaylistFragment
 import com.example.playlistmaker.player.domain.models.PlayerState
 import com.example.playlistmaker.search.domain.models.Track
+import com.example.playlistmaker.search.ui.OnItemClickListener
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.koin.core.parameter.parametersOf
@@ -29,21 +33,28 @@ class AudioPlayerActivity : AppCompatActivity() {
         ActivityAudioPlayerBinding.inflate(layoutInflater)
     }
 
-    private val adapter by lazy { BottomSheetPlaylistAdapter() }
+    private val adapter by lazy { BottomSheetPlaylistAdapter(onItemClickListener) }
+
+    private val onItemClickListener = OnItemClickListener<Playlist> {
+        viewModel.addTrackToPlaylist(track, it)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
         track = GsonConverter.createItemFromJson(
-            intent.getStringExtra("TRACK") ?: "",
-            Track::class.java
+            intent.getStringExtra("TRACK") ?: "", Track::class.java
         )
         track = viewModel.updateFavourite(track)
 
         binding.bottomSheetList.adapter = adapter
         binding.bottomSheetList.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+
+        val bottomSheetBehavior = BottomSheetBehavior.from(binding.playlistsBottomSheet).apply {
+            state = BottomSheetBehavior.STATE_HIDDEN
+        }
 
         viewModel.getPlayerState().observe(this) { playerState ->
             updateState(playerState)
@@ -54,10 +65,8 @@ class AudioPlayerActivity : AppCompatActivity() {
         }
 
         viewModel.getFavouriteValue().observe(this) { isFavourite ->
-            if (isFavourite == true)
-                binding.ibAddToFavorite.setImageResource(R.drawable.ic_favourite_filled)
-            else if (isFavourite == false)
-                binding.ibAddToFavorite.setImageResource(R.drawable.ic_favourite)
+            if (isFavourite == true) binding.ibAddToFavorite.setImageResource(R.drawable.ic_favourite_filled)
+            else if (isFavourite == false) binding.ibAddToFavorite.setImageResource(R.drawable.ic_favourite)
             track.isFavourite = isFavourite ?: track.isFavourite
         }
 
@@ -67,8 +76,22 @@ class AudioPlayerActivity : AppCompatActivity() {
             adapter.notifyDataSetChanged()
         }
 
-        val bottomSheetBehavior = BottomSheetBehavior.from(binding.playlistsBottomSheet).apply {
-            state = BottomSheetBehavior.STATE_HIDDEN
+        viewModel.getAddingTrackState().observe(this) { result ->
+            if (result.first) {
+                Toast.makeText(
+                    this,
+                    getString(R.string.add_to_playlist) + " ${result.second.playlistName}",
+                    Toast.LENGTH_SHORT
+                ).show()
+                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+                adapter.notifyDataSetChanged()
+            } else {
+                Toast.makeText(
+                    this,
+                    getString(R.string.was_added_to_playlist) + " ${result.second.playlistName}",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
 
         bottomSheetBehavior.addBottomSheetCallback(object :
@@ -85,7 +108,9 @@ class AudioPlayerActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                binding.overlay.alpha = (slideOffset + 1f) / 2f
+            }
 
         })
 
@@ -107,15 +132,30 @@ class AudioPlayerActivity : AppCompatActivity() {
             viewModel.loadPlaylist()
             bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
         }
+
+        binding.bottomSheetNewPlaylistButton.setOnClickListener {
+            bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            binding.main.visibility = View.GONE
+            binding.playerFragmentContainer.visibility = View.VISIBLE
+
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.player_fragment_container, CreatePlaylistFragment())
+                .addToBackStack("CreatePlaylistFragment").commit()
+        }
+
+        supportFragmentManager.setFragmentResultListener("fragment_key", this) { _, result ->
+            if (result.getBoolean("closed", false)) {
+                binding.main.visibility = View.VISIBLE
+                binding.playerFragmentContainer.visibility = View.GONE
+            }
+            viewModel.loadPlaylist()
+        }
     }
 
     private fun render() {
-        Glide.with(this)
-            .load(Formatter.getCoverArtwork(track.artworkUrl100))
-            .centerCrop()
+        Glide.with(this).load(Formatter.getCoverArtwork(track.artworkUrl100)).centerCrop()
             .transform(RoundedCorners(Formatter.dpToPx(8f, this)))
-            .placeholder(R.drawable.placeholder)
-            .into(binding.trackImage)
+            .placeholder(R.drawable.placeholder).into(binding.trackImage)
 
         track.apply {
             binding.trackName.text = trackName
@@ -141,8 +181,7 @@ class AudioPlayerActivity : AppCompatActivity() {
 
     private fun updateState(playerState: PlayerState) {
         when (playerState) {
-            PlayerState.STATE_PAUSED, PlayerState.STATE_PREPARED
-                -> binding.ibPlay.setImageDrawable(
+            PlayerState.STATE_PAUSED, PlayerState.STATE_PREPARED -> binding.ibPlay.setImageDrawable(
                 AppCompatResources.getDrawable(
                     this, R.drawable.ic_play_arrow
                 )

@@ -17,7 +17,12 @@ class CreatePlaylistViewModel(
     private val application: Context,
 ) : ViewModel() {
 
-    fun createPlaylist(playlistName: String, playlistDescription: String, imageUri: Uri, bitmap: Bitmap) {
+    fun createPlaylist(
+        playlistName: String,
+        playlistDescription: String,
+        imageUri: Uri,
+        bitmap: Bitmap
+    ) {
         var playlistImage: String? = null
         if (imageUri != Uri.EMPTY)
             playlistImage = "${UUID.randomUUID()}.png"
