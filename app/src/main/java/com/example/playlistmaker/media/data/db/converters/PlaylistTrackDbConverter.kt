@@ -19,7 +19,7 @@ class PlaylistTrackDbConverter {
         )
     }
 
-    fun map(trackEntity: PlaylistTrackEntity): Track {
+    fun map(trackEntity: PlaylistTrackEntity, isFavourite: Boolean): Track {
         return Track(
             trackEntity.trackId,
             trackEntity.trackName,
@@ -31,7 +31,7 @@ class PlaylistTrackDbConverter {
             trackEntity.primaryGenreName,
             trackEntity.country,
             trackEntity.previewUrl,
-            true
+            isFavourite
         )
     }
 }

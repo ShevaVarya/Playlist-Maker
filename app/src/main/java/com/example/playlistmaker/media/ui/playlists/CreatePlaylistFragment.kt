@@ -70,7 +70,6 @@ class CreatePlaylistFragment() : Fragment() {
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
                 if (uri != null) {
-                    //binding.image.scaleType = ImageView.ScaleType.CENTER_CROP
                     Glide.with(this)
                         .load(uri).apply(
                             RequestOptions().transform(
@@ -83,8 +82,6 @@ class CreatePlaylistFragment() : Fragment() {
                         )
                         .into(binding.image)
                     uriImage = uri
-                    //binding.image.setImageURI(uri)
-                    //uriImage = saveImageToPrivateStorage(uri)
                 } else {
                     Toast.makeText(requireContext(), "Изображение не выбрано", Toast.LENGTH_SHORT)
                         .show()
@@ -121,18 +118,19 @@ class CreatePlaylistFragment() : Fragment() {
             closeFragment()
         }
 
-        requireActivity().onBackPressedDispatcher.addCallback(
-            viewLifecycleOwner,
-            object : OnBackPressedCallback(true) {
-                override fun handleOnBackPressed() {
-                    if (
-                        !(binding.editTextName.text.isNullOrEmpty())
-                        || !(binding.editTextDescription.text.isNullOrEmpty())
-                        || uriImage != Uri.EMPTY
-                    )
-                        showDialog()
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if (
+                    !(binding.editTextName.text.isNullOrEmpty())
+                    || !(binding.editTextDescription.text.isNullOrEmpty())
+                    || uriImage != Uri.EMPTY
+                ) {
+                    showDialog()
+                } else {
+                    closeFragment()
                 }
-            })
+            }
+        })
     }
 
     fun showDialog() {

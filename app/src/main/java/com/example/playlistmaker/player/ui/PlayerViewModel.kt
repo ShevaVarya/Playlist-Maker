@@ -70,9 +70,9 @@ class PlayerViewModel(
             addingTrackState.postValue(Pair(false, playlist))
         } else {
             viewModelScope.launch {
-                playlistInteractor.addTrackToPlaylist(track, playlist)
+                val result = playlistInteractor.addTrackToPlaylist(track, playlist)
+                addingTrackState.postValue(Pair(true, result))
             }
-            addingTrackState.postValue(Pair(true, playlist))
         }
     }
 

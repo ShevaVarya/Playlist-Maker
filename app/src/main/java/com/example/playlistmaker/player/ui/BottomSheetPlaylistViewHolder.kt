@@ -20,7 +20,11 @@ class BottomSheetPlaylistViewHolder(
 
     fun bind(model: Playlist) {
         binding.bottomSheetPlaylistName.text = model.playlistName
-        binding.bottomSheetPlaylistCount.text = Formatter.formatTracks(model.countTracks)
+        binding.bottomSheetPlaylistCount.text = itemView.resources.getQuantityString(
+            R.plurals.track_count,
+            model.countTracks,
+            model.countTracks
+        )
 
         val filePath = getCacheImagePath(itemView.context)
         val file = File(filePath, model.imagePath ?: "")

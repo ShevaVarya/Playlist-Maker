@@ -30,9 +30,10 @@ class PlaylistInteractorImpl(
         repository.updatePlaylist(playlist)
     }
 
-    override suspend fun addTrackToPlaylist(track: Track, playlist: Playlist) {
+    override suspend fun addTrackToPlaylist(track: Track, playlist: Playlist): Playlist {
         playlist.listTracksId.add(track.trackId)
-        playlist.countTracks++
-        repository.addTrackToPlaylist(track, playlist)
+        val newPlaylist = playlist.copy(countTracks = playlist.countTracks + 1)
+        repository.addTrackToPlaylist(track, newPlaylist)
+        return newPlaylist
     }
 }

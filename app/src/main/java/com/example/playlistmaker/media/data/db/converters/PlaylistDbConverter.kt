@@ -5,7 +5,9 @@ import com.example.playlistmaker.media.data.db.entity.PlaylistEntity
 import com.example.playlistmaker.media.domain.models.Playlist
 import com.google.gson.reflect.TypeToken
 
-class PlaylistDbConverter {
+class PlaylistDbConverter(
+    private val gsonConverter: GsonConverter
+) {
 
     fun map(playlist: Playlist): PlaylistEntity {
         return PlaylistEntity(
@@ -13,7 +15,7 @@ class PlaylistDbConverter {
             playlistName = playlist.playlistName,
             playlistDescription = playlist.playlistDescription,
             imagePath = playlist.imagePath,
-            listTracks = GsonConverter.createJsonFromList(playlist.listTracksId),
+            listTracks = gsonConverter.createJsonFromList(playlist.listTracksId),
             countTrack = playlist.countTracks
         )
     }
@@ -26,7 +28,7 @@ class PlaylistDbConverter {
             playlistDescription = playlistEntity.playlistDescription,
             imagePath = playlistEntity.imagePath,
             listTracksId = ArrayList(
-                GsonConverter.createListFromJson<Int>(
+                gsonConverter.createListFromJson<Int>(
                     playlistEntity.listTracks,
                     type
                 )

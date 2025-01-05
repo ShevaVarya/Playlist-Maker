@@ -1,5 +1,6 @@
 package com.example.playlistmaker.player.ui
 
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
@@ -10,7 +11,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.common.utils.Formatter
-import com.example.playlistmaker.common.utils.GsonConverter
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.media.domain.models.Playlist
 import com.example.playlistmaker.media.ui.playlists.CreatePlaylistFragment
@@ -43,9 +43,12 @@ class AudioPlayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        track = GsonConverter.createItemFromJson(
-            intent.getStringExtra("TRACK") ?: "", Track::class.java
-        )
+        track = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra("TRACK", Track::class.java)!!
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableExtra("TRACK")!!
+        }
         track = viewModel.updateFavourite(track)
 
         binding.bottomSheetList.adapter = adapter
@@ -143,8 +146,8 @@ class AudioPlayerActivity : AppCompatActivity() {
                 .addToBackStack("CreatePlaylistFragment").commit()
         }
 
-        supportFragmentManager.setFragmentResultListener("fragment_key", this) { _, result ->
-            if (result.getBoolean("closed", false)) {
+        supportFragmentManager.setFragmentResultListener(FRAGMENT_REQUEST_KET, this) { _, result ->
+            if (result.getBoolean(FRAGMENT_BOOLEAN_KEY, false)) {
                 binding.main.visibility = View.VISIBLE
                 binding.playerFragmentContainer.visibility = View.GONE
             }
@@ -207,5 +210,10 @@ class AudioPlayerActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         viewModel.onReleasePlayer()
+    }
+
+    companion object {
+        const val FRAGMENT_REQUEST_KET = "fragment_key"
+        const val FRAGMENT_BOOLEAN_KEY = "closed"
     }
 }

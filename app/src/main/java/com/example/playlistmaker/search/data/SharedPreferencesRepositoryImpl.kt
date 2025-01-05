@@ -5,21 +5,24 @@ import com.example.playlistmaker.common.utils.Utils.MAX_SIZES_SEARCH_HISTORY
 import com.example.playlistmaker.common.utils.WorkerSharedPreferences
 import com.example.playlistmaker.search.domain.api.SharedPreferencesRepository
 import com.example.playlistmaker.search.domain.models.Track
-import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 
 class SharedPreferencesRepositoryImpl(
     private val workerSharedPreferences: WorkerSharedPreferences,
+    private val gsonConverter: GsonConverter,
 ) : SharedPreferencesRepository {
     override fun saveInSharedPreferences(tracks: List<Track>) {
-        val track = GsonConverter.createJsonFromList(tracks)
+        val track = gsonConverter.createJsonFromList(tracks)
         workerSharedPreferences.saveInSharedPreferences(track)
     }
 
     override fun getFromSharedPreferences(): List<Track> {
         val itemType = object : TypeToken<List<Track>>() {}.type
         val tracks =
-        GsonConverter.createListFromJson<Track>(workerSharedPreferences.gerFromSharedPreferences(), itemType)
+            gsonConverter.createListFromJson<Track>(
+                workerSharedPreferences.gerFromSharedPreferences(),
+                itemType
+            )
         return tracks
     }
 

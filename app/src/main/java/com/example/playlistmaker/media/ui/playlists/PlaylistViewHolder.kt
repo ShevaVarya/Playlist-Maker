@@ -20,7 +20,11 @@ class PlaylistViewHolder(
 
     fun bind(model: Playlist) {
         binding.playlistName.text = model.playlistName
-        binding.playlistCount.text = Formatter.formatTracks(model.countTracks)
+        binding.playlistCount.text = itemView.resources.getQuantityString(
+            R.plurals.track_count,
+            model.countTracks,
+            model.countTracks
+        )
 
         val filePath = getCacheImagePath(itemView.context)
         val file = File(filePath, model.imagePath ?: "")

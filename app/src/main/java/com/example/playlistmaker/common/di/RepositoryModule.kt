@@ -23,7 +23,7 @@ val repositoryModule = module {
     }
 
     single<SharedPreferencesRepository> {
-        SharedPreferencesRepositoryImpl(get())
+        SharedPreferencesRepositoryImpl(get(), get())
     }
 
     single<FavouriteTracksRepository> {

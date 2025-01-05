@@ -3,6 +3,7 @@ package com.example.playlistmaker.common.di
 import android.content.Context.MODE_PRIVATE
 import android.media.MediaPlayer
 import androidx.room.Room
+import com.example.playlistmaker.common.utils.GsonConverter
 import com.example.playlistmaker.common.utils.Utils.SHARED_PREFERENCES_NAME_FILE
 import com.example.playlistmaker.common.utils.WorkerSharedPreferences
 import com.example.playlistmaker.common.utils.WorkerSharedPreferencesImpl
@@ -77,10 +78,12 @@ val dataModule = module {
     }
 
     factory {
-        PlaylistDbConverter()
+        PlaylistDbConverter(get())
     }
 
     factory {
         PlaylistTrackDbConverter()
     }
+
+    factory { GsonConverter() }
 }

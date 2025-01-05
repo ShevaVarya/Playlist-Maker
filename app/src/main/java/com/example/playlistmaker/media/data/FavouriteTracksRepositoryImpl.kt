@@ -28,6 +28,6 @@ class FavouriteTracksRepositoryImpl(
     }
 
     private fun convertFromTrackEntity(tracks: List<TrackEntity>): List<Track> {
-        return tracks.map { track -> trackDbConverter.map(track) }
+        return tracks.map { track -> trackDbConverter.map(track, true) }
     }
 }
