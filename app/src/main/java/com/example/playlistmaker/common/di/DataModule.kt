@@ -21,6 +21,7 @@ import com.example.playlistmaker.sharing.data.workers.intents.SendEmail
 import com.example.playlistmaker.sharing.data.workers.intents.SendEmailImpl
 import com.example.playlistmaker.sharing.data.workers.intents.SendMessage
 import com.example.playlistmaker.sharing.data.workers.intents.SendMessageImpl
+import com.google.gson.Gson
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -85,5 +86,7 @@ val dataModule = module {
         PlaylistTrackDbConverter()
     }
 
-    factory { GsonConverter() }
+    factory {
+        GsonConverter(Gson())
+    }
 }

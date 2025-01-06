@@ -3,18 +3,19 @@ package com.example.playlistmaker.common.utils
 import com.google.gson.Gson
 import java.lang.reflect.Type
 
-class GsonConverter {
+class GsonConverter(
+    private val gson: Gson
+) {
 
     fun <T> createJsonFromList(list: List<T>): String {
-        return Gson().toJson(list)
+        return gson.toJson(list)
     }
 
     fun <T> createListFromJson(json: String?, itemType: Type): List<T> {
         if (json.isNullOrEmpty()) {
             return emptyList()
         } else {
-            return Gson().fromJson(json, itemType)
-
+            return gson.fromJson(json, itemType)
         }
     }
 }
