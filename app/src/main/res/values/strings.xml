@@ -45,10 +45,19 @@
     <string name="was_added_to_playlist">Трек уже добавлен в плейлист</string>
     <string name="playlist">Плейлист</string>
     <string name="created">создан</string>
+    <string name="share">Поделиться</string>
+    <string name="edit_information">Редактировать информацию</string>
+    <string name="delete_playlist">Удалить плейлист</string>
     <plurals name="track_count">
         <item quantity="one">%d трек</item>
         <item quantity="few">%d трека</item>
         <item quantity="many">%d треков</item>
         <item quantity="other">%d трека</item>
+    </plurals>
+    <plurals name="minute_count">
+        <item quantity="one">%d минута</item>
+        <item quantity="few">%d минуты</item>
+        <item quantity="many">%d минут</item>
+        <item quantity="other">%d минут</item>
     </plurals>
 </resources>

@@ -266,6 +266,13 @@
         app:behavior_peekHeight="505dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
+        <View
+            android:layout_width="50dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_line" />
+
         <TextView
             android:id="@+id/bottom_sheet_title"
             style="@style/BottomSheetTitle"

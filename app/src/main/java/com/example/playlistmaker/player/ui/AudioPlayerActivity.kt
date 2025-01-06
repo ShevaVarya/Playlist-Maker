@@ -13,7 +13,7 @@ import com.example.playlistmaker.common.utils.Formatter
 import com.example.playlistmaker.common.utils.getExtraWithVersions
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.media.domain.models.Playlist
-import com.example.playlistmaker.media.ui.playlists.CreatePlaylistFragment
+import com.example.playlistmaker.media.ui.playlists.createPlaylist.CreatePlaylistFragment
 import com.example.playlistmaker.player.domain.models.PlayerState
 import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.search.ui.OnItemClickListener
@@ -78,7 +78,7 @@ class AudioPlayerActivity : AppCompatActivity() {
             if (result.first) {
                 Toast.makeText(
                     this,
-                    getString(R.string.add_to_playlist) + " ${result.second.playlistName}",
+                    getString(R.string.added_to_playlist) + " ${result.second.playlistName}",
                     Toast.LENGTH_SHORT
                 ).show()
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN

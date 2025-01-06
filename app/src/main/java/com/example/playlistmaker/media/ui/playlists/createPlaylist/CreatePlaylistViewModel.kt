@@ -1,4 +1,4 @@
-package com.example.playlistmaker.media.ui.playlists
+package com.example.playlistmaker.media.ui.playlists.createPlaylist
 
 import android.content.Context
 import android.graphics.Bitmap

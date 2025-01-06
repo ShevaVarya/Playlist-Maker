@@ -1,4 +1,4 @@
-package com.example.playlistmaker.media.ui.playlists
+package com.example.playlistmaker.media.ui.playlists.createPlaylist
 
 import android.app.AlertDialog
 import android.net.Uri

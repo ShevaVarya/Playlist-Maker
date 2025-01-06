@@ -14,7 +14,7 @@ import com.example.playlistmaker.databinding.ItemPlaylistBinding
 import com.example.playlistmaker.media.domain.models.Playlist
 import java.io.File
 
-class PlaylistViewHolder(
+class PlaylistsViewHolder(
     val binding: ItemPlaylistBinding
 ) : RecyclerView.ViewHolder(binding.root) {
 

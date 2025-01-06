@@ -15,5 +15,6 @@ data class PlaylistTrackEntity(
     val releaseDate: String, // Дата релиза
     val primaryGenreName: String, // Жанр трека
     val country: String, // Страна исполнителя
-    val previewUrl: String //Ссылка на отрывок трека
+    val previewUrl: String, //Ссылка на отрывок трека
+    val isFavourite: Boolean
 )
