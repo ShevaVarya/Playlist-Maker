@@ -29,14 +29,14 @@ class SearchFragment : Fragment() {
 
     private val viewModel: SearchViewModel by viewModel<SearchViewModel>()
 
-    private val onItemClickListener = OnItemClickListener { item ->
+    private val onItemClickListener = OnItemClickListener<Track> { item ->
         if (viewModel.clickDebounce()) {
             val list = viewModel.addTrackToHistory(item)
             searchHistoryAdapter.tracks.clear()
             searchHistoryAdapter.tracks.addAll(list)
             searchHistoryAdapter.notifyDataSetChanged()
             val intent = Intent(requireContext(), AudioPlayerActivity::class.java).apply {
-                putExtra(INTENT_KEY, createJson(item))
+                putExtra(INTENT_KEY, item)
             }
             startActivity(intent)
         }
@@ -205,10 +205,6 @@ class SearchFragment : Fragment() {
             errorSubtittle.visibility = View.GONE
             reloadButton.visibility = View.GONE
         }
-    }
-
-    private fun createJson(item: Any): String {
-        return Gson().toJson(item)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

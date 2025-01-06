@@ -8,12 +8,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.playlistmaker.databinding.FragmentFavouriteTracksBinding
-import com.example.playlistmaker.media.ui.favourite.models.FavouriteState
+import com.example.playlistmaker.media.ui.models.FavouriteState
 import com.example.playlistmaker.player.ui.AudioPlayerActivity
 import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.search.ui.OnItemClickListener
 import com.example.playlistmaker.search.ui.TrackAdapter
-import com.google.gson.Gson
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class FavouriteTracksFragment() : Fragment() {
@@ -25,10 +24,10 @@ class FavouriteTracksFragment() : Fragment() {
     private var _binding: FragmentFavouriteTracksBinding? = null
     private val binding get() = _binding!!
 
-    private val onItemClickListener = OnItemClickListener { item ->
+    private val onItemClickListener = OnItemClickListener<Track> { item ->
         if (viewModel.clickDebounce()) {
             val intent = Intent(requireContext(), AudioPlayerActivity::class.java).apply {
-                putExtra(INTENT_KEY, createJson(item))
+                putExtra(INTENT_KEY, item)
             }
             startActivity(intent)
         }
@@ -46,7 +45,7 @@ class FavouriteTracksFragment() : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.getMediaState().observe(viewLifecycleOwner) {
+        viewModel.getFavouriteState().observe(viewLifecycleOwner) {
             render(it)
         }
 
@@ -78,10 +77,6 @@ class FavouriteTracksFragment() : Fragment() {
         adapter.tracks.clear()
         adapter.tracks.addAll(tracks)
         adapter.notifyDataSetChanged()
-    }
-
-    private fun createJson(item: Any): String {
-        return Gson().toJson(item)
     }
 
     override fun onResume() {

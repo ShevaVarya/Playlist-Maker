@@ -20,7 +20,7 @@ class TrackDbConverter {
         )
     }
 
-    fun map(trackEntity: TrackEntity): Track {
+    fun map(trackEntity: TrackEntity, isFavourite: Boolean): Track {
         return Track(
             trackEntity.trackId,
             trackEntity.trackName,
@@ -32,7 +32,7 @@ class TrackDbConverter {
             trackEntity.primaryGenreName,
             trackEntity.country,
             trackEntity.previewUrl,
-            true
+            isFavourite
         )
     }
 
