@@ -19,11 +19,13 @@ import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
-import com.example.playlistmaker.common.utils.Formatter
 import com.example.playlistmaker.common.utils.getCacheImagePath
 import com.example.playlistmaker.databinding.FragmentPlaylistViewBinding
 import com.example.playlistmaker.media.domain.models.Playlist
 import com.example.playlistmaker.media.ui.favourite.FavouriteTracksFragment.Companion.INTENT_KEY
+import com.example.playlistmaker.media.ui.models.OpeningGoal
+import com.example.playlistmaker.media.ui.models.PlaylistViewState
+import com.example.playlistmaker.media.ui.playlists.createPlaylist.CreatePlaylistFragment
 import com.example.playlistmaker.player.ui.AudioPlayerActivity
 import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.search.ui.OnItemClickListener
@@ -79,19 +81,17 @@ class PlaylistViewFragment() : Fragment() {
         playlistId = requireArguments().getInt(PLAYLIST_ID_KEY, -1)
         if (playlistId == -1) {
             Toast.makeText(requireContext(), "Плейлист не найден!", Toast.LENGTH_SHORT).show()
-            findNavController().navigateUp()
+            closeFragment()
         }
 
         binding.toolbar.setOnClickListener {
-            findNavController().navigateUp()
+            closeFragment()
         }
 
         viewModel.loadPlaylist(playlistId)
 
         viewModel.getPlaylist().observe(viewLifecycleOwner) {
-            render(it.playlist, it.list, it.duration)
-            playlist = it.playlist
-            tracks = it.list
+            render(it)
         }
 
         binding.tracksList.adapter = adapter
@@ -102,7 +102,6 @@ class PlaylistViewFragment() : Fragment() {
             BottomSheetBehavior.from(binding.playlistBottomSheet).apply {
                 state = BottomSheetBehavior.STATE_COLLAPSED
             }
-        //playlistBottomSheetBehavior.peekHeight = resources.displayMetrics.heightPixels / 3
         playlistBottomSheetBehavior.isHideable = false
 
         val menuBottomSheetBehavior = BottomSheetBehavior.from(binding.menuBottomSheet).apply {
@@ -141,9 +140,16 @@ class PlaylistViewFragment() : Fragment() {
             share()
         }
 
-        binding.editPlaylist.setOnClickListener { }
+        binding.editPlaylist.setOnClickListener {
+            findNavController().navigate(
+                R.id.action_playlistFragment_to_createPlaylistFragment,
+                CreatePlaylistFragment.createArgs(OpeningGoal.UpdatePlaylist(playlistId))
+            )
+        }
 
-        binding.deletePlaylist.setOnClickListener { }
+        binding.deletePlaylist.setOnClickListener {
+            deletePlaylist()
+        }
 
 
     }
@@ -171,6 +177,31 @@ class PlaylistViewFragment() : Fragment() {
             string += "${track.artistName} - ${track.trackName} (${track.trackTimeMillis})\n"
         }
         return string
+    }
+
+    private fun deletePlaylist() {
+
+        val dialog = MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Удалить плейлист")
+            .setMessage("Хотите удалить плейлист?") // Описание диалога
+            .setNegativeButton("Нет") { dialog, which ->
+                dialog.cancel()
+            }
+            .setPositiveButton("Да") { dialog, which -> // Добавляет кнопку «Да»
+                viewModel.deletePlaylist(playlist)
+            }
+            .create()
+
+        dialog.show()
+
+        val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+        val negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+
+        val color = ContextCompat.getColor(requireContext(), R.color.blue)
+
+        positiveButton.setTextColor(color)
+        negativeButton.setTextColor(color)
+
     }
 
     private fun deleteTrackFromPlaylist(track: Track) {
@@ -221,7 +252,23 @@ class PlaylistViewFragment() : Fragment() {
             .into(binding.root.findViewById(R.id.bottom_sheet_playlist_image))
     }
 
-    private fun render(playlist: Playlist, listTracks: List<Track>, duration: String) {
+    private fun render(state: PlaylistViewState) {
+        when (state) {
+            is PlaylistViewState.Empty -> {
+                closeFragment()
+            }
+
+            is PlaylistViewState.PlaylistUIModel -> {
+                showContent(state.playlist, state.list, state.duration)
+                playlist = state.playlist
+                tracks = state.list
+                playlistId = state.playlist.playlistId
+            }
+        }
+
+    }
+
+    private fun showContent(playlist: Playlist, listTracks: List<Track>, duration: String) {
         adapter.tracks.clear()
         adapter.tracks.addAll(listTracks)
         adapter.notifyDataSetChanged()
@@ -255,6 +302,10 @@ class PlaylistViewFragment() : Fragment() {
             playlist.countTracks,
             playlist.countTracks,
         )
+    }
+
+    private fun closeFragment() {
+        findNavController().navigateUp()
     }
 
     companion object {

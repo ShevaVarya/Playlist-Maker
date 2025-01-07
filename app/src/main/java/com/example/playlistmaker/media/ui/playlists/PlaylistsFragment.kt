@@ -4,16 +4,16 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView.OnItemLongClickListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.media.domain.models.Playlist
+import com.example.playlistmaker.media.ui.models.OpeningGoal
 import com.example.playlistmaker.media.ui.models.PlaylistState
+import com.example.playlistmaker.media.ui.playlists.createPlaylist.CreatePlaylistFragment
 import com.example.playlistmaker.media.ui.playlists.playlist.PlaylistViewFragment
-import com.example.playlistmaker.search.domain.models.Track
 import com.example.playlistmaker.search.ui.OnItemClickListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
@@ -56,7 +56,10 @@ class PlaylistsFragment() : Fragment() {
             GridLayoutManager(requireContext(), 2)
 
         binding.newPlaylistButton.setOnClickListener {
-            findNavController().navigate(R.id.createPlaylistFragment)
+            findNavController().navigate(
+                R.id.action_mediaFragment_to_createPlaylistFragment,
+                CreatePlaylistFragment.createArgs(OpeningGoal.CreatePlaylist)
+            )
         }
     }
 
@@ -94,6 +97,5 @@ class PlaylistsFragment() : Fragment() {
 
     companion object {
         fun newInstance() = PlaylistsFragment()
-        const val PLAYLIST_ID_KEY = "PLAYLIST_ID"
     }
 }

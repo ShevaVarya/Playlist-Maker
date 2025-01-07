@@ -10,9 +10,10 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.example.playlistmaker.R
 import com.example.playlistmaker.common.utils.Formatter
-import com.example.playlistmaker.common.utils.getExtraWithVersions
+import com.example.playlistmaker.common.utils.getParcelableCompat
 import com.example.playlistmaker.databinding.ActivityAudioPlayerBinding
 import com.example.playlistmaker.media.domain.models.Playlist
+import com.example.playlistmaker.media.ui.models.OpeningGoal
 import com.example.playlistmaker.media.ui.playlists.createPlaylist.CreatePlaylistFragment
 import com.example.playlistmaker.player.domain.models.PlayerState
 import com.example.playlistmaker.search.domain.models.Track
@@ -43,7 +44,7 @@ class AudioPlayerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        track = getExtraWithVersions(intent)
+        track = getParcelableCompat<Track>(intent, TRACK_EXTRA)!!
         track = viewModel.updateFavourite(track)
 
         binding.bottomSheetList.adapter = adapter
@@ -136,8 +137,12 @@ class AudioPlayerActivity : AppCompatActivity() {
             binding.main.visibility = View.GONE
             binding.playerFragmentContainer.visibility = View.VISIBLE
 
+            val fragment = CreatePlaylistFragment().apply {
+                arguments = CreatePlaylistFragment.createArgs(OpeningGoal.CreatePlaylist)
+            }
+
             supportFragmentManager.beginTransaction()
-                .replace(R.id.player_fragment_container, CreatePlaylistFragment())
+                .replace(R.id.player_fragment_container, fragment)
                 .addToBackStack("CreatePlaylistFragment").commit()
         }
 
@@ -208,6 +213,7 @@ class AudioPlayerActivity : AppCompatActivity() {
     }
 
     companion object {
+        const val TRACK_EXTRA = "TRACK"
         const val FRAGMENT_REQUEST_KET = "fragment_key"
         const val FRAGMENT_BOOLEAN_KEY = "closed"
     }

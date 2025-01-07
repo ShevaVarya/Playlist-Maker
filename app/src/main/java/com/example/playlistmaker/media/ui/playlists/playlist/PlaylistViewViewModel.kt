@@ -9,7 +9,7 @@ import com.example.playlistmaker.common.utils.debounce
 import com.example.playlistmaker.media.domain.api.PlaylistInteractor
 import com.example.playlistmaker.media.domain.models.Playlist
 import com.example.playlistmaker.media.ui.favourite.FavouriteTracksViewModel.Companion.CLICK_DEBOUNCE_DELAY
-import com.example.playlistmaker.media.ui.models.PlaylistUIModel
+import com.example.playlistmaker.media.ui.models.PlaylistViewState
 import com.example.playlistmaker.search.domain.models.Track
 import kotlinx.coroutines.launch
 
@@ -17,9 +17,10 @@ class PlaylistViewViewModel(
     private val interactor: PlaylistInteractor,
 ) : ViewModel() {
 
-    private val playlistModel = MutableLiveData<PlaylistUIModel>()
+    private val playlistState = MutableLiveData<PlaylistViewState>()
 
-    fun getPlaylist(): LiveData<PlaylistUIModel> = playlistModel
+
+    fun getPlaylist(): LiveData<PlaylistViewState> = playlistState
 
     private var isCLickAllowed = true
 
@@ -27,8 +28,12 @@ class PlaylistViewViewModel(
         viewModelScope.launch {
             interactor.getPlaylistById(playlistId).collect { playlist ->
                 interactor.getPlaylistTracks(playlist.listTracksId).collect { tracks ->
-                    playlistModel.postValue(
-                        PlaylistUIModel(playlist, tracks, getDuration(tracks)),
+                    playlistState.postValue(
+                        PlaylistViewState.PlaylistUIModel(
+                            playlist,
+                            tracks,
+                            getDuration(tracks)
+                        ),
                     )
                 }
             }
@@ -39,14 +44,24 @@ class PlaylistViewViewModel(
         viewModelScope.launch {
             interactor.deleteTrackFromPlaylist(track.trackId, playlist).collect { updatedPlaylist ->
                 interactor.getPlaylistTracks(playlist.listTracksId).collect { tracks ->
-                    playlistModel.postValue(
-                        PlaylistUIModel(updatedPlaylist, tracks, getDuration(tracks)),
+                    playlistState.postValue(
+                        PlaylistViewState.PlaylistUIModel(
+                            updatedPlaylist,
+                            tracks,
+                            getDuration(tracks)
+                        ),
                     )
                 }
             }
         }
     }
 
+    fun deletePlaylist(playlist: Playlist) {
+        viewModelScope.launch {
+            interactor.deletePlaylist(playlist)
+            playlistState.postValue(PlaylistViewState.Empty)
+        }
+    }
 
 
     private fun getDuration(list: List<Track>): String {

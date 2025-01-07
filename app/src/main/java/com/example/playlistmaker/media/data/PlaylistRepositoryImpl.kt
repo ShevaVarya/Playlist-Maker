@@ -32,6 +32,9 @@ class PlaylistRepositoryImpl(
 
     override suspend fun deletePlaylist(playlist: Playlist) {
         appDatabase.playlistDao().deletePlaylist(playlist.playlistId)
+        playlist.listTracksId.forEach { trackId ->
+            if (!checkTrack(trackId)) appDatabase.playlistTrackDao().deleteTrack(trackId)
+        }
     }
 
     override suspend fun updatePlaylist(playlist: Playlist) {
