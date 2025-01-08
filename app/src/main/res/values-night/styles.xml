@@ -85,6 +85,7 @@
         <item name="android:textColor">@color/white</item>
     </style>
     <style name="PlaylistTextBS" parent="GeneralText">
+        <item name="android:gravity">center_vertical</item>
         <item name="android:textColor">@color/white</item>
     </style>
 

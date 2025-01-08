@@ -53,6 +53,15 @@
     <string name="edit_playlist">Редактировать плейлист</string>
     <string name="save">Cохранить</string>
     <string name="image_is_not_picked">Изображение не выбрано</string>
+    <string name="empty_list">Здесь еще нет треков</string>
+    <string name="delete_track_title">Удалить трек</string>
+    <string name="delete_playlist_title">Удалить плейлистк</string>
+    <string name="delete_track_text">Хотите удалить трек?</string>
+    <string name="delete_playlist_text">Хотите удалить плейлист?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="playlist_was_not_found">Плейлист не найден!</string>
+    <string name="there_are_not_tracks">В данном плейлисте нет треков!</string>
     <plurals name="track_count">
         <item quantity="one">%d трек</item>
         <item quantity="few">%d трека</item>

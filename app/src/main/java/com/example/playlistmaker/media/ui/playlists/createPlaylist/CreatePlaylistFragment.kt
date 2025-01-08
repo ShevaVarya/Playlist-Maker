@@ -28,7 +28,7 @@ import com.example.playlistmaker.common.utils.getCacheImagePath
 import com.example.playlistmaker.common.utils.getParcelableCompat
 import com.example.playlistmaker.databinding.FragmentCreatePlaylistBinding
 import com.example.playlistmaker.media.domain.models.Playlist
-import com.example.playlistmaker.media.ui.models.OpeningGoal
+import com.example.playlistmaker.media.ui.models.OpeningAction
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.io.File
@@ -42,7 +42,7 @@ open class CreatePlaylistFragment() : Fragment() {
 
     private var uriImage = Uri.EMPTY
 
-    private var goal: OpeningGoal? = null
+    private var goal: OpeningAction? = null
     private var isEditedNow = false
     private var playlist: Playlist? = null
 
@@ -63,8 +63,8 @@ open class CreatePlaylistFragment() : Fragment() {
 
         goal?.let {
             when (it) {
-                is OpeningGoal.CreatePlaylist -> {}
-                is OpeningGoal.UpdatePlaylist -> {
+                is OpeningAction.CreatePlaylist -> {}
+                is OpeningAction.UpdatePlaylist -> {
                     viewModel.loadPlaylist(it.playlistId)
                     isEditedNow = true
                 }
@@ -239,10 +239,10 @@ open class CreatePlaylistFragment() : Fragment() {
     }
 
     companion object {
-        private const val GOAL = "GOAL"
-        private const val REQUEST_KEY = "fragment_key"
-        private const val CLOSED = "fragment_key"
+        const val GOAL = "GOAL"
+        const val REQUEST_KEY = "fragment_key"
+        const val CLOSED = "closed"
 
-        fun createArgs(goal: OpeningGoal): Bundle = bundleOf(GOAL to goal)
+        fun createArgs(goal: OpeningAction): Bundle = bundleOf(GOAL to goal)
     }
 }

@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.media.domain.models.Playlist
-import com.example.playlistmaker.media.ui.models.OpeningGoal
+import com.example.playlistmaker.media.ui.models.OpeningAction
 import com.example.playlistmaker.media.ui.models.PlaylistState
 import com.example.playlistmaker.media.ui.playlists.createPlaylist.CreatePlaylistFragment
 import com.example.playlistmaker.media.ui.playlists.playlist.PlaylistViewFragment
@@ -58,7 +58,7 @@ class PlaylistsFragment() : Fragment() {
         binding.newPlaylistButton.setOnClickListener {
             findNavController().navigate(
                 R.id.action_mediaFragment_to_createPlaylistFragment,
-                CreatePlaylistFragment.createArgs(OpeningGoal.CreatePlaylist)
+                CreatePlaylistFragment.createArgs(OpeningAction.CreatePlaylist)
             )
         }
     }
