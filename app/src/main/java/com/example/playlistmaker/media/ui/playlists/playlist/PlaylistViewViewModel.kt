@@ -1,13 +1,11 @@
 package com.example.playlistmaker.media.ui.playlists.playlist
 
-import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.playlistmaker.common.utils.Formatter
 import com.example.playlistmaker.common.utils.debounce
-import com.example.playlistmaker.media.domain.api.FileInteractor
 import com.example.playlistmaker.media.domain.api.PlaylistInteractor
 import com.example.playlistmaker.media.domain.models.Playlist
 import com.example.playlistmaker.media.ui.favourite.FavouriteTracksViewModel.Companion.CLICK_DEBOUNCE_DELAY
@@ -17,14 +15,11 @@ import kotlinx.coroutines.launch
 
 class PlaylistViewViewModel(
     private val interactor: PlaylistInteractor,
-    private val fileInteractor: FileInteractor,
 ) : ViewModel() {
 
     private val playlistState = MutableLiveData<PlaylistViewState>()
-    // private val imageUri = MutableLiveData<Uri>()
 
     fun getPlaylist(): LiveData<PlaylistViewState> = playlistState
-    //fun getImageUri(): LiveData<Uri> = imageUri
 
     private var isCLickAllowed = true
 
@@ -36,8 +31,7 @@ class PlaylistViewViewModel(
                         PlaylistViewState.PlaylistUIModel(
                             playlist,
                             tracks,
-                            getDuration(tracks),
-                            getUriFromPath(playlist.imagePath)
+                            getDuration(tracks)
                         )
                     )
                 }
@@ -53,8 +47,7 @@ class PlaylistViewViewModel(
                         PlaylistViewState.PlaylistUIModel(
                             updatedPlaylist,
                             tracks,
-                            getDuration(tracks),
-                            getUriFromPath(playlist.imagePath)
+                            getDuration(tracks)
                         )
                     )
                 }
@@ -68,8 +61,6 @@ class PlaylistViewViewModel(
             playlistState.postValue(PlaylistViewState.Empty)
         }
     }
-
-    private fun getUriFromPath(path: String?): Uri = fileInteractor.getUriFromPath(path)
 
     private fun getDuration(list: List<Track>): String {
         val totalDuration = list.sumOf { track ->

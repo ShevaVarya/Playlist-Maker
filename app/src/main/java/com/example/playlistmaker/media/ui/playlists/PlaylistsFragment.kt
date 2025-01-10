@@ -68,7 +68,6 @@ class PlaylistsFragment() : Fragment() {
             is PlaylistState.EmptyPlaylists -> showStub()
             is PlaylistState.Content -> showContent(state.playlists)
         }
-
     }
 
     private fun showContent(playlists: List<Playlist>) {

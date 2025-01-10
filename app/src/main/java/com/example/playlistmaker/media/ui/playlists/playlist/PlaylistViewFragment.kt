@@ -2,7 +2,6 @@ package com.example.playlistmaker.media.ui.playlists.playlist
 
 import android.app.AlertDialog
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -46,7 +45,6 @@ class PlaylistViewFragment() : Fragment() {
 
     private lateinit var playlist: Playlist
     private lateinit var tracks: List<Track>
-    private lateinit var imageUri: Uri
 
     private var isClickable = true
 
@@ -244,19 +242,19 @@ class PlaylistViewFragment() : Fragment() {
                 playlist.countTracks,
             )
 
-
-        Glide.with(requireContext()).load(imageUri).placeholder(R.drawable.placeholder).apply(
-            RequestOptions().transform(
-                MultiTransformation(
-                    CenterCrop(),
-                    RoundedCorners(
-                        Formatter.dpToPx(
-                            2f, requireContext()
+        Glide.with(requireContext()).load(playlist.imagePath).placeholder(R.drawable.placeholder)
+            .apply(
+                RequestOptions().transform(
+                    MultiTransformation(
+                        CenterCrop(),
+                        RoundedCorners(
+                            Formatter.dpToPx(
+                                2f, requireContext()
+                            )
                         )
                     )
                 )
-            )
-        ).into(binding.root.findViewById(R.id.bottom_sheet_playlist_image))
+            ).into(binding.root.findViewById(R.id.bottom_sheet_playlist_image))
     }
 
     private fun render(state: PlaylistViewState) {
@@ -266,11 +264,10 @@ class PlaylistViewFragment() : Fragment() {
             }
 
             is PlaylistViewState.PlaylistUIModel -> {
-                showContent(state.playlist, state.list, state.duration, state.imageUri)
+                showContent(state.playlist, state.list, state.duration)
                 playlist = state.playlist
                 tracks = state.list
                 playlistId = state.playlist.playlistId
-                imageUri = state.imageUri
             }
         }
 
@@ -280,7 +277,6 @@ class PlaylistViewFragment() : Fragment() {
         playlist: Playlist,
         listTracks: List<Track>,
         duration: String,
-        imageUri: Uri
     ) {
         if (listTracks.isEmpty()) {
             binding.emptyList.visibility = View.VISIBLE
@@ -293,14 +289,15 @@ class PlaylistViewFragment() : Fragment() {
             adapter.notifyDataSetChanged()
         }
 
-
-        Glide.with(requireContext()).load(imageUri).placeholder(R.drawable.placeholder).apply(
-            RequestOptions().transform(
-                MultiTransformation(
-                    CenterCrop()
+        Glide.with(requireContext()).load(playlist.imagePath)
+            .placeholder(R.drawable.placeholder)
+            .apply(
+                RequestOptions().transform(
+                    MultiTransformation(
+                        CenterCrop()
+                    )
                 )
-            )
-        ).into(binding.playlistImage)
+            ).into(binding.playlistImage)
 
         binding.playlistName.text = playlist.playlistName
         if (playlist.playlistDescription.isEmpty()) {

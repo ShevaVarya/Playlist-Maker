@@ -8,7 +8,7 @@ class FileInteractorImpl(
     private val repository: FileRepository
 ) : FileInteractor {
 
-    override fun getUriFromPath(path: String?): Uri {
-        return repository.getUriFromPath(path)
+    override fun saveImageToPrivateStorage(fileName: String, imageUri: Uri): String {
+        return repository.saveImageToPrivateStorage(fileName, imageUri)
     }
 }

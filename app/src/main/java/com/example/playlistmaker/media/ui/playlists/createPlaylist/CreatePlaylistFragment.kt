@@ -14,7 +14,6 @@ import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.bundle.bundleOf
 import androidx.core.content.ContextCompat
-import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResult
 import com.bumptech.glide.Glide
@@ -24,14 +23,12 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.common.utils.Formatter
-import com.example.playlistmaker.common.utils.getCacheImagePath
 import com.example.playlistmaker.common.utils.getParcelableCompat
 import com.example.playlistmaker.databinding.FragmentCreatePlaylistBinding
 import com.example.playlistmaker.media.domain.models.Playlist
 import com.example.playlistmaker.media.ui.models.OpeningAction
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import java.io.File
 
 open class CreatePlaylistFragment() : Fragment() {
 
@@ -42,7 +39,7 @@ open class CreatePlaylistFragment() : Fragment() {
 
     private var uriImage = Uri.EMPTY
 
-    private var goal: OpeningAction? = null
+    private var action: OpeningAction? = null
     private var isEditedNow = false
     private var playlist: Playlist? = null
 
@@ -59,9 +56,9 @@ open class CreatePlaylistFragment() : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        goal = getParcelableCompat(requireArguments(), GOAL)
+        action = getParcelableCompat(requireArguments(), ACTION)
 
-        goal?.let {
+        action?.let {
             when (it) {
                 is OpeningAction.CreatePlaylist -> {}
                 is OpeningAction.UpdatePlaylist -> {
@@ -75,7 +72,6 @@ open class CreatePlaylistFragment() : Fragment() {
             showContent(it)
             playlist = it
         }
-
 
         binding.buttonCreate.isEnabled = false
 
@@ -96,7 +92,7 @@ open class CreatePlaylistFragment() : Fragment() {
         val pickMedia =
             registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
                 if (uri != null) {
-                    setImage(uri)
+                    setImage(uri.toString())
                     uriImage = uri
                 } else {
                     Toast.makeText(
@@ -173,9 +169,9 @@ open class CreatePlaylistFragment() : Fragment() {
             })
     }
 
-    private fun setImage(uri: Uri?) {
+    private fun setImage(path: String) {
         Glide.with(requireContext())
-            .load(uri).apply(
+            .load(path).apply(
                 RequestOptions().transform(
                     MultiTransformation(
                         CenterCrop(), RoundedCorners(
@@ -188,12 +184,7 @@ open class CreatePlaylistFragment() : Fragment() {
     }
 
     private fun showContent(playlist: Playlist) {
-        if (playlist.imagePath != null) {
-            val file = File(getCacheImagePath(requireContext()), playlist.imagePath)
-            setImage(file.toUri())
-        } else {
-            setImage(null)
-        }
+        setImage(playlist.imagePath ?: "")
 
         binding.toolbar.title = getString(R.string.edit_playlist)
         binding.buttonCreate.text = getString(R.string.save)
@@ -234,15 +225,15 @@ open class CreatePlaylistFragment() : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
-        goal = null
+        action = null
         playlist = null
     }
 
     companion object {
-        const val GOAL = "GOAL"
+        const val ACTION = "GOAL"
         const val REQUEST_KEY = "fragment_key"
         const val CLOSED = "closed"
 
-        fun createArgs(goal: OpeningAction): Bundle = bundleOf(GOAL to goal)
+        fun createArgs(goal: OpeningAction): Bundle = bundleOf(ACTION to goal)
     }
 }

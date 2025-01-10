@@ -19,15 +19,8 @@ class TrackViewHolder(private val view: View) : RecyclerView.ViewHolder(view) {
     private val next = view.findViewById<ImageView>(R.id.icon_next)
 
     fun bind(model: Track) {
-        val screenWidth = itemView.resources.displayMetrics.widthPixels
-        val artistWidth = Formatter.dpToPx(
-            (screenWidth - trackTime.width - artwork.width - next.width - (40)).toFloat(),
-            itemView.context
-        )
-
         trackName.text = model.trackName
         artistName.text = model.artistName
-        //artistName.maxWidth = artistWidth
         trackTime.text = model.trackTimeMillis
         Glide.with(view)
             .load(model.artworkUrl100)

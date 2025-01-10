@@ -1,24 +1,19 @@
 package com.example.playlistmaker.media.ui.playlists.createPlaylist
 
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.playlistmaker.common.utils.getCacheImagePath
+import com.example.playlistmaker.media.domain.api.FileInteractor
 import com.example.playlistmaker.media.domain.api.PlaylistInteractor
 import com.example.playlistmaker.media.domain.models.Playlist
 import kotlinx.coroutines.launch
-import java.io.File
-import java.io.FileOutputStream
 import java.util.UUID
 
 open class CreatePlaylistViewModel(
     private val interactor: PlaylistInteractor,
-    private val application: Context,
+    private val fileInteractor: FileInteractor,
 ) : ViewModel() {
 
     private val playlist = MutableLiveData<Playlist>()
@@ -33,10 +28,12 @@ open class CreatePlaylistViewModel(
         if (imageUri != Uri.EMPTY)
             playlistImage = "${UUID.randomUUID()}.png"
         viewModelScope.launch {
-            interactor.createPlaylist(playlistName, playlistDescription, playlistImage)
+            var imagePath: String? = null
             if (imageUri != Uri.EMPTY) {
-                saveImageToPrivateStorage(playlistImage!!, imageUri)
+                imagePath = fileInteractor.saveImageToPrivateStorage(playlistImage!!, imageUri)
             }
+            interactor.createPlaylist(playlistName, playlistDescription, imagePath)
+
         }
     }
 
@@ -49,12 +46,17 @@ open class CreatePlaylistViewModel(
         if (imageUri != Uri.EMPTY)
             playlistImage = "${UUID.randomUUID()}.png"
         viewModelScope.launch {
+            var imagePath: String? = null
+            if (imageUri != Uri.EMPTY) {
+                imagePath = fileInteractor.saveImageToPrivateStorage(playlistImage!!, imageUri)
+            }
+
             if (imageUri != Uri.EMPTY) {
                 interactor.updatePlaylist(
                     playlist.value!!.copy(
                         playlistName = playlistName,
                         playlistDescription = playlistDescription,
-                        imagePath = playlistImage
+                        imagePath = imagePath
                     )
                 )
             } else {
@@ -67,9 +69,7 @@ open class CreatePlaylistViewModel(
                 )
             }
 
-            if (imageUri != Uri.EMPTY) {
-                saveImageToPrivateStorage(playlistImage!!, imageUri)
-            }
+
         }
     }
 
@@ -79,24 +79,6 @@ open class CreatePlaylistViewModel(
                 playlist.postValue(it)
             }
         }
-    }
-
-    private fun saveImageToPrivateStorage(fileName: String, imageUri: Uri) {
-        val filePath = getCacheImagePath(application)
-        if (!filePath.exists()) {
-            filePath.mkdirs()
-        }
-        //создаём экземпляр класса File, который указывает на файл внутри каталога
-        val file = File(filePath, fileName)
-
-        val inputStream = application.contentResolver.openInputStream(imageUri)
-
-        // создаём исходящий поток байтов в созданный выше файл
-        val outputStream = FileOutputStream(file)
-        // записываем картинку с помощью BitmapFactory
-        BitmapFactory
-            .decodeStream(inputStream)
-            .compress(Bitmap.CompressFormat.JPEG, 30, outputStream)
     }
 
 }
