@@ -17,6 +17,9 @@ class Formatter {
         fun msToMinute(sec: Long): String =
             SimpleDateFormat("mm:ss", Locale.getDefault()).format(sec)
 
+        fun toMinute(sec: Long): String =
+            SimpleDateFormat("m", Locale.getDefault()).format(sec)
+
         fun getCoverArtwork(artworkUrl100: String) =
             artworkUrl100.replaceAfterLast('/', "512x512bb.jpg")
 

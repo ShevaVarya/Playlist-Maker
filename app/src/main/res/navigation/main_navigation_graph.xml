@@ -8,13 +8,28 @@
         android:id="@+id/mediaFragment"
         android:name="com.example.playlistmaker.media.ui.MediaFragment"
         android:label="fragment_media"
-        tools:layout="@layout/fragment_media" >
+        tools:layout="@layout/fragment_media">
         <action
             android:id="@+id/action_mediaFragment_to_audioPlayerActivity"
-            app:destination="@id/audioPlayerActivity" />
+            app:destination="@id/audioPlayerActivity"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
         <action
             android:id="@+id/action_mediaFragment_to_createPlaylistFragment"
-            app:destination="@id/createPlaylistFragment" />
+            app:destination="@id/createPlaylistFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+        <action
+            android:id="@+id/action_mediaFragment_to_playlistFragment"
+            app:destination="@id/playlistFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/searchFragment"
@@ -41,6 +56,19 @@
         tools:layout="@layout/activity_audio_player" />
     <fragment
         android:id="@+id/createPlaylistFragment"
-        android:name="com.example.playlistmaker.media.ui.playlists.CreatePlaylistFragment"
+        android:name="com.example.playlistmaker.media.ui.playlists.createPlaylist.CreatePlaylistFragment"
         android:label="CreatePlaylistFragment" />
+    <fragment
+        android:id="@+id/playlistFragment"
+        android:name="com.example.playlistmaker.media.ui.playlists.playlist.PlaylistViewFragment"
+        android:label="fragmnet_playlist"
+        tools:layout="@layout/fragment_playlist_view">
+        <action
+            android:id="@+id/action_playlistFragment_to_createPlaylistFragment"
+            app:destination="@id/createPlaylistFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right" />
+    </fragment>
 </navigation>

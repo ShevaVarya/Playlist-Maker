@@ -1,6 +1,5 @@
 package com.example.playlistmaker.player.ui
 
-import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.MultiTransformation
@@ -9,10 +8,8 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.example.playlistmaker.R
 import com.example.playlistmaker.common.utils.Formatter
-import com.example.playlistmaker.common.utils.getCacheImagePath
 import com.example.playlistmaker.databinding.ItemPlaylistBottomSheetBinding
 import com.example.playlistmaker.media.domain.models.Playlist
-import java.io.File
 
 class BottomSheetPlaylistViewHolder(
     private val binding: ItemPlaylistBottomSheetBinding
@@ -26,10 +23,8 @@ class BottomSheetPlaylistViewHolder(
             model.countTracks
         )
 
-        val filePath = getCacheImagePath(itemView.context)
-        val file = File(filePath, model.imagePath ?: "")
         Glide.with(itemView)
-            .load(file.toUri())
+            .load(model.imagePath ?: "")
             .placeholder(R.drawable.placeholder)
             .apply(
                 RequestOptions().transform(

@@ -4,8 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.playlistmaker.common.utils.debounce
 import com.example.playlistmaker.media.domain.api.PlaylistInteractor
 import com.example.playlistmaker.media.ui.models.PlaylistState
+import com.example.playlistmaker.search.ui.SearchViewModel.Companion.CLICK_DEBOUNCE_DELAY
 import kotlinx.coroutines.launch
 
 class PlaylistsViewModel(
@@ -14,6 +16,8 @@ class PlaylistsViewModel(
 
     private val state = MutableLiveData<PlaylistState>()
     fun getState(): LiveData<PlaylistState> = state
+
+    private var isCLickAllowed = true
 
     init {
         loadPlaylist()
@@ -30,4 +34,14 @@ class PlaylistsViewModel(
             }
         }
     }
+
+    fun clickDebounce(): Boolean {
+        val current = isCLickAllowed
+        debounce<Boolean>(CLICK_DEBOUNCE_DELAY, viewModelScope, false) {
+            isCLickAllowed = false
+        }
+        isCLickAllowed = true
+        return current
+    }
+
 }

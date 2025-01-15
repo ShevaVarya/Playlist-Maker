@@ -10,7 +10,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.example.playlistmaker.R
 import com.example.playlistmaker.databinding.FragmentPlaylistsBinding
 import com.example.playlistmaker.media.domain.models.Playlist
+import com.example.playlistmaker.media.ui.models.OpeningAction
 import com.example.playlistmaker.media.ui.models.PlaylistState
+import com.example.playlistmaker.media.ui.playlists.createPlaylist.CreatePlaylistFragment
+import com.example.playlistmaker.media.ui.playlists.playlist.PlaylistViewFragment
+import com.example.playlistmaker.search.ui.OnItemClickListener
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class PlaylistsFragment() : Fragment() {
@@ -20,7 +24,16 @@ class PlaylistsFragment() : Fragment() {
     private var _binding: FragmentPlaylistsBinding? = null
     private val binding get() = _binding!!
 
-    private val adapter: PlaylistAdapter by lazy { PlaylistAdapter() }
+    private val adapter: PlaylistsAdapter by lazy { PlaylistsAdapter(onItemClickListener) }
+
+    private val onItemClickListener = OnItemClickListener<Playlist> { item ->
+        if (viewModel.clickDebounce()) {
+            findNavController().navigate(
+                R.id.action_mediaFragment_to_playlistFragment,
+                PlaylistViewFragment.createArgs(item.playlistId)
+            )
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,7 +56,10 @@ class PlaylistsFragment() : Fragment() {
             GridLayoutManager(requireContext(), 2)
 
         binding.newPlaylistButton.setOnClickListener {
-            findNavController().navigate(R.id.createPlaylistFragment)
+            findNavController().navigate(
+                R.id.action_mediaFragment_to_createPlaylistFragment,
+                CreatePlaylistFragment.createArgs(OpeningAction.CreatePlaylist)
+            )
         }
     }
 
@@ -52,7 +68,6 @@ class PlaylistsFragment() : Fragment() {
             is PlaylistState.EmptyPlaylists -> showStub()
             is PlaylistState.Content -> showContent(state.playlists)
         }
-
     }
 
     private fun showContent(playlists: List<Playlist>) {

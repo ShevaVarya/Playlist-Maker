@@ -6,7 +6,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.playlistmaker.media.data.db.entity.PlaylistEntity
-import com.example.playlistmaker.media.domain.models.Playlist
 
 @Dao
 interface PlaylistDao {
@@ -22,4 +21,7 @@ interface PlaylistDao {
 
     @Update
     suspend fun updatePlaylist(playlist: PlaylistEntity)
+
+    @Query("SELECT * FROM playlist_table WHERE id = :id")
+    suspend fun getPlaylistById(id: Int): PlaylistEntity
 }

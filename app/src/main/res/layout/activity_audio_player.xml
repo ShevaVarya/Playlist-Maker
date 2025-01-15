@@ -53,19 +53,23 @@
         <TextView
             android:id="@+id/track_name"
             style="@style/TitleText"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
+            app:layout_constraintHorizontal_bias="0"
             app:layout_constraintStart_toStartOf="@id/left_guideline"
+            app:layout_constraintEnd_toEndOf="@id/right_guideline"
             app:layout_constraintTop_toBottomOf="@id/track_image"
             tools:text="Yesterday (Remastered 2009)" />
 
         <TextView
             android:id="@+id/track_artist"
             style="@style/GeneralText14"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            app:layout_constraintHorizontal_bias="0"
+            app:layout_constraintEnd_toEndOf="@id/right_guideline"
             app:layout_constraintStart_toStartOf="@id/left_guideline"
             app:layout_constraintTop_toBottomOf="@id/track_name"
             tools:text="The Beatles" />
@@ -265,6 +269,13 @@
         app:behavior_hideable="true"
         app:behavior_peekHeight="505dp"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+        <View
+            android:layout_width="50dp"
+            android:layout_height="4dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_line" />
 
         <TextView
             android:id="@+id/bottom_sheet_title"

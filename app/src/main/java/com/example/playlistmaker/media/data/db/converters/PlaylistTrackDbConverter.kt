@@ -15,11 +15,12 @@ class PlaylistTrackDbConverter {
             releaseDate = track.releaseDate,
             primaryGenreName = track.primaryGenreName,
             country = track.country,
-            previewUrl = track.previewUrl
+            previewUrl = track.previewUrl,
+            isFavourite = track.isFavourite
         )
     }
 
-    fun map(trackEntity: PlaylistTrackEntity, isFavourite: Boolean): Track {
+    fun map(trackEntity: PlaylistTrackEntity): Track {
         return Track(
             trackEntity.trackId,
             trackEntity.trackName,
@@ -31,7 +32,7 @@ class PlaylistTrackDbConverter {
             trackEntity.primaryGenreName,
             trackEntity.country,
             trackEntity.previewUrl,
-            isFavourite
+            trackEntity.isFavourite
         )
     }
 }
