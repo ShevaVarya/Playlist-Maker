@@ -61,7 +61,7 @@
 
 | Поиск треков                            | Плейлисты                                    | Избранное                                      |
 | --------------------------------------- | -------------------------------------------- | ---------------------------------------------- |
-| ![Поиск](screenshots/search_screen.png) | ![Плейлист](screenshots/playlists.png)       | ![Избранное](screenshots/favorites.png)        |
+| ![Поиск](screenshots/search.png)        | ![Плейлист](screenshots/playlists.png)       | ![Избранное](screenshots/favourites.png)       |
 
 ---
 
