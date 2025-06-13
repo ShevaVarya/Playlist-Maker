@@ -61,7 +61,7 @@
 
 | Поиск треков                            | Плейлисты                               | Избранное                               | Настроки                                |
 | --------------------------------------- | --------------------------------------- | --------------------------------------- | --------------------------------------- |
-| <img src="screenshots/searchpng.png" width="200"/> | <img src="screenshots/playlists" width="200"/> | <img src="screenshots/favourites" width="200"/> | <img src="screenshots/settings" width="200"/> |
+| <img src="screenshots/searchpng.png" width="200"/> | <img src="screenshots/playlists.png" width="200"/> | <img src="screenshots/favourites.png" width="200"/> | <img src="screenshots/settings.png" width="200"/> |
 
 - Скриншоты хранятся в папке screenshots/
 
